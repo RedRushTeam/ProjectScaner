@@ -55,6 +55,41 @@ MainWindow::MainWindow(QWidget *parent)
     vbox->addWidget(exit_);
 
     connect(exit_, &QPushButton::clicked, qApp, &QApplication::quit);
+    connect(help_, &QPushButton::clicked, this, &MainWindow::open_help_window);
+    connect(about_, &QPushButton::clicked, this, &MainWindow::open_about_window);
+    connect(start_with_rand, &QPushButton::clicked, this, &MainWindow::open_game_window);
+    connect(start_with_prep, &QPushButton::clicked, this, &MainWindow::open_constr_window);
+    connect(start_with_settings, &QPushButton::clicked, this, &MainWindow::open_constr_window);
 
     this->setMinimumSize(720, 420);
+}
+
+void MainWindow::open_help_window() const
+{
+    help* _help_window = new help();
+    _help_window->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);
+    _help_window->setWindowTitle("Помощь");
+    _help_window->setMinimumSize(720, 420);
+    _help_window->show();
+}
+
+void MainWindow::open_about_window() const
+{
+    auto dialog_for_about = new about();
+    dialog_for_about->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint);
+    dialog_for_about->setWindowTitle("О программе");
+    dialog_for_about->setMinimumSize(480, 320);
+    dialog_for_about->setMaximumSize(480, 320);
+    dialog_for_about->setModal(true);
+    dialog_for_about->exec();
+}
+
+void MainWindow::open_game_window() const
+{
+
+}
+
+void MainWindow::open_constr_window() const
+{
+
 }

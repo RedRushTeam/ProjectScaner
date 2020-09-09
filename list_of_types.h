@@ -18,4 +18,8 @@
 #include <QMainWindow>
 #include <QPushButton>
 
+//my includes
+#include "help.h"
+#include "about.h"
+
 #endif // LIST_OF_TYPES_H

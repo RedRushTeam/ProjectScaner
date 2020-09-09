@@ -14,7 +14,11 @@ class MainWindow : public QWidget
 public:
     MainWindow(QWidget *parent = nullptr);
 
-private:
+private slots:
+    void open_help_window() const;
+    void open_about_window() const;
+    void open_game_window() const;
+    void open_constr_window() const;
 
 };
 #endif // MAINWINDOW_H
