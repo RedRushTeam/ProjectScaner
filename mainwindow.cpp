@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(help_, &QPushButton::clicked, this, &MainWindow::open_help_window);
     connect(about_, &QPushButton::clicked, this, &MainWindow::open_about_window);
     connect(start_with_rand, &QPushButton::clicked, this, &MainWindow::open_game_window);
-    connect(start_with_prep, &QPushButton::clicked, this, &MainWindow::open_constr_window);
+    connect(start_with_prep, &QPushButton::clicked, this, &MainWindow::open_prep_window);
     connect(start_with_settings, &QPushButton::clicked, this, &MainWindow::open_constr_window);
 
     this->setMinimumSize(720, 420);
@@ -84,12 +84,41 @@ void MainWindow::open_about_window() const
     dialog_for_about->exec();
 }
 
-void MainWindow::open_game_window() const
+void MainWindow::open_game_window()
 {
-
+    auto change_size_ = new change_size(this);
+    change_size_->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint);
+    change_size_->setWindowTitle("Выберете размер карты");
+    change_size_->setMinimumSize(480, 320);
+    change_size_->setMaximumSize(480, 320);
+    change_size_->is_this_will_be_random_game = true;
+    this->close();
+    change_size_->setModal(true);
+    change_size_->exec();
 }
 
-void MainWindow::open_constr_window() const
+void MainWindow::open_prep_window()
 {
+    auto change_size_ = new change_size();
+    change_size_->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint);
+    change_size_->setWindowTitle("Выберете размер карты");
+    change_size_->setMinimumSize(480, 320);
+    change_size_->setMaximumSize(480, 320);
+    change_size_->is_this_will_be_prep_game = true;
+    this->close();
+    change_size_->setModal(true);
+    change_size_->exec();
+}
 
+void MainWindow::open_constr_window()
+{
+    auto change_size_ = new change_size();
+    change_size_->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint);
+    change_size_->setWindowTitle("Выберете размер карты");
+    change_size_->setMinimumSize(480, 320);
+    change_size_->setMaximumSize(480, 320);
+    change_size_->is_this_will_be_god_game = true;
+    this->close();
+    change_size_->setModal(true);
+    change_size_->exec();
 }

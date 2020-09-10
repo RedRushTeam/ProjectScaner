@@ -17,9 +17,12 @@
 #include <QApplication>
 #include <QMainWindow>
 #include <QPushButton>
+#include <QIntValidator>
+#include <QCloseEvent>
 
 //my includes
 #include "help.h"
 #include "about.h"
+#include "change_size.h"
 
 #endif // LIST_OF_TYPES_H

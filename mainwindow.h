@@ -17,8 +17,9 @@ public:
 private slots:
     void open_help_window() const;
     void open_about_window() const;
-    void open_game_window() const;
-    void open_constr_window() const;
+    void open_game_window();
+    void open_prep_window();
+    void open_constr_window();
 
 };
 #endif // MAINWINDOW_H

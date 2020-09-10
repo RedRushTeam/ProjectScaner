@@ -1,8 +1,9 @@
 QT       += core gui
+QT += charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++17
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -10,20 +11,26 @@ CONFIG += c++11
 
 SOURCES += \
     about.cpp \
+    change_size.cpp \
     help.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    random_game.cpp
 
 HEADERS += \
     about.h \
+    change_size.h \
     help.h \
     list_of_types.h \
-    mainwindow.h
+    mainwindow.h \
+    random_game.h
 
 FORMS += \
     about.ui \
+    change_size.ui \
     help.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    random_game.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
