@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/new/random_game_textures">
+        <file>228.1.jpg</file>
+        <file>Bricks_H.jpg</file>
+        <file>Bricks_V.jpg</file>
+        <file>Door_H_Down.jpg</file>
+        <file>Door_H_Up.jpg</file>
+        <file>Door_V_Left.jpg</file>
+        <file>Door_V_Right.jpg</file>
+    </qresource>
+</RCC>

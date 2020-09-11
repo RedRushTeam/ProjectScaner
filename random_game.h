@@ -15,7 +15,12 @@ public:
     explicit randome_game(QWidget *parent = nullptr);
     ~randome_game();
 
+    void closeEvent(QCloseEvent *event);
+    void resizeEvent(QResizeEvent * event);
+
 private:
+    QGraphicsView* view;
+    QGraphicsScene* scene;
     Ui::randome_game *ui;
 };
 

@@ -19,6 +19,9 @@
 #include <QPushButton>
 #include <QIntValidator>
 #include <QCloseEvent>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QDesktopWidget>
 
 //my includes
 #include "help.h"
