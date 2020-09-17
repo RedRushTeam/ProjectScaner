@@ -70,7 +70,7 @@ void change_size::OK_clicked()
 
     //w.showMaximized();
     if(this->is_this_will_be_random_game){
-        auto randome_game_ = new randome_game(this);
+        auto randome_game_ = new randome_game(this, this->weight->text().toInt(), this->high->text().toInt());
         randome_game_->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);
         randome_game_->setWindowTitle("Случайная игра");
         randome_game_->showMaximized();

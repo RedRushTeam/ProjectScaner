@@ -7,5 +7,8 @@
         <file>Door_H_Up.jpg</file>
         <file>Door_V_Left.jpg</file>
         <file>Door_V_Right.jpg</file>
+        <file>new/random_game_textures/chair 128x128.jpg</file>
+        <file>new/random_game_textures/divanH 256x128.jpg</file>
+        <file>new/random_game_textures/tableH 384x128.jpg</file>
     </qresource>
 </RCC>

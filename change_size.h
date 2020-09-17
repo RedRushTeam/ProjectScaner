@@ -1,9 +1,7 @@
 #ifndef CHANGE_SIZE_H
 #define CHANGE_SIZE_H
 
-#include "list_of_types.h"
 #include "random_game.h"
-
 
 namespace Ui {
 class change_size;
