@@ -25,14 +25,14 @@ change_size::change_size(QWidget *parent) :
     high->setFont(font_for_label);
     high->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     high->setValidator(new QIntValidator(10, 80, this));
-    high->setText("20");
+    high->setText("10");
     hbox->addWidget(high);
 
     weight = new QLineEdit();
     weight->setFont(font_for_label);
     weight->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     weight->setValidator(new QIntValidator(10, 80, this));
-    weight->setText("50");
+    weight->setText("10");
     hbox->addWidget(weight);
 
     vbox->addLayout(hbox);

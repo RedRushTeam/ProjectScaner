@@ -24,6 +24,7 @@ public:
     int generate_random_int_number(int min, int max) const;
     void generate_map();
     void set_scene_size();
+    bool check_cycle(pair<int, int> coord) const;
 
     int height_of_map;
     int weight_of_map;
