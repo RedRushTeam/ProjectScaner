@@ -25,6 +25,7 @@ public:
     void generate_map();
     void set_scene_size();
     bool check_cycle(pair<int, int> coord) const;
+    void wheelEvent(QWheelEvent *event);
 
     int height_of_map;
     int weight_of_map;
@@ -36,6 +37,7 @@ private:
     Ui::randome_game *ui;
 
     vector<vector<type_of_item>> vec_of_soderzimoe;
+    std::mt19937* gen;
 };
 
 //              kostil'

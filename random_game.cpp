@@ -7,10 +7,16 @@ randome_game::randome_game(QWidget *parent, int weight, int height) :
 {
     ui->setupUi(this);
 
+    this->gen = new std::mt19937(time(NULL));
+
     QVBoxLayout* hbox = new QVBoxLayout(this);
 
     this->scene = new QGraphicsScene(/*0, 0, 1280, 720*/);
     this->view = new QGraphicsView(scene);
+
+    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     view->show();
     this->set_scene_size();
     //this->resize(1280, 720);
@@ -39,11 +45,10 @@ void randome_game::resizeEvent(QResizeEvent *event)
 
 int randome_game::generate_random_int_number(int min, int max) const
 {
-    std::mt19937 gen(time(NULL));
     std::uniform_int_distribution<> uid(min, max);
     if(min == max)
         return min;
-    return uid(gen);
+    return uid(*this->gen);
 }
 
 void randome_game::generate_map()
@@ -77,6 +82,10 @@ void randome_game::generate_map()
     // TODO ADD TEXTURES
     QPixmap* armchair = new QPixmap();
     armchair->load(":/new/random_game_textures/new/random_game_textures/chair 128x128.jpg");
+    QPixmap* tableH = new QPixmap();
+    tableH->load(":/new/random_game_textures/new/random_game_textures/tableH 384x128.jpg");
+    QPixmap* divanH = new QPixmap();
+    divanH->load(":/new/random_game_textures/new/random_game_textures/divanH 256x128.jpg");
 
     // TODO TROUBLES WITH PRYAM. KOMNATAMI
     //wall add
@@ -123,24 +132,57 @@ void randome_game::generate_map()
             scene->addItem(item_floor);
         }
 
-    //cycling check
-
-    //armchairs adding                              ////////////////////////////////////////////////////////////////////////////////
+    //armchairs adding
     for(int i = 0; i < total_armchairs; ++i){
         Pixmap *item_armchair = new Pixmap(*armchair);
-        auto sh = this->generate_random_int_number(0, this->weight_of_map - 2);
-        auto v = this->generate_random_int_number(0, this->height_of_map - 2);
-        this->vec_of_soderzimoe[v + 2][sh + 2] = neprohod_object_;
+        lable_armchair:
+        auto sh = this->generate_random_int_number(1, this->weight_of_map - 2);
+        auto v = this->generate_random_int_number(1, this->height_of_map - 2);
+
+        if(this->vec_of_soderzimoe[v + 1][sh + 1] == neprohod_object_)
+            goto lable_armchair;
+
+        this->vec_of_soderzimoe[v + 1][sh + 1] = neprohod_object_;
         item_armchair->setOffset(-armchair->width()/2, -armchair->height()/2);
-        item_armchair->setPos(128. * sh + 320., 320. + 128 * v);
+        item_armchair->setPos(128. * sh + 192., 192. + 128 * v);
         scene->addItem(item_armchair);
+    }
+
+    //tableH adding
+    for(int i = 0; i < total_ones_tables; ++i){
+        Pixmap *item_tableH = new Pixmap(*tableH);
+        label_table:
+        auto sh = this->generate_random_int_number(2, this->weight_of_map - 3);
+        auto v = this->generate_random_int_number(1, this->height_of_map - 2);
+        if((this->vec_of_soderzimoe[v + 1][sh] == neprohod_object_) || (this->vec_of_soderzimoe[v + 1][sh + 2] == neprohod_object_) || (this->vec_of_soderzimoe[v + 1][sh + 1] == neprohod_object_) )
+            goto label_table;
+        this->vec_of_soderzimoe[v + 1][sh] = neprohod_object_;
+        this->vec_of_soderzimoe[v + 1][sh + 2] = neprohod_object_;
+        this->vec_of_soderzimoe[v + 1][sh + 1] = neprohod_object_;
+        item_tableH->setOffset(-tableH->width()/2, -tableH->height()/2);
+        item_tableH->setPos(128. * sh + 192., 192. + 128 * v);
+        scene->addItem(item_tableH);
+    }
+    //divanH adding
+    for(int i = 0; i < sofa_count; ++i){
+        Pixmap *item_divanH = new Pixmap(*divanH);
+        label_divan:
+        auto sh = this->generate_random_int_number(1, this->weight_of_map - 3);
+        auto v = this->generate_random_int_number(1, this->height_of_map - 2);
+        if((this->vec_of_soderzimoe[v + 1][sh + 1] == neprohod_object_) || (this->vec_of_soderzimoe[v + 1][sh + 2] == neprohod_object_))
+            goto label_divan;
+        this->vec_of_soderzimoe[v + 1][sh + 1] = neprohod_object_;
+        this->vec_of_soderzimoe[v + 1][sh + 2] = neprohod_object_;
+        item_divanH->setOffset(-divanH->width()/2, -divanH->height()/2);
+        item_divanH->setPos(128. * sh + 256., 192. + 128 * v);
+        scene->addItem(item_divanH);
     }
 
     int blyadovka1 = 1;
 
 }
 
-bool randome_game::check_cycle(pair<int, int> coord) const
+/*bool randome_game::check_cycle(pair<int, int> coord) const
 {
     //proverka sosedey
     if(this->vec_of_soderzimoe[coord.first][coord.second] != empty_)
@@ -188,11 +230,38 @@ bool randome_game::check_cycle(pair<int, int> coord) const
     //kostil'
     return true;
 
-}
+}*/
 
 void randome_game::set_scene_size()
 {
     scene->setSceneRect(0, 0, 128 * (this->weight_of_map + 2), 128 * (this->height_of_map + 2));
 }
 
+void randome_game::wheelEvent(QWheelEvent *event){      //отнаследоваться от QGraphicsView TODO
+    /*qreal scaleFactor=pow((double)2, -event->delta() / 240.0);
+
+    //qreal factor=this->view->transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
+    if (factor<0.0002 || factor>0.1950)
+        return;
+
+    this->view->scale(scaleFactor, scaleFactor);
+    this->view->resetCachedContent();*/
+
+    if (event->modifiers() & Qt::ControlModifier) {
+        // zoom
+        const QGraphicsView::ViewportAnchor anchor = view->transformationAnchor();
+        view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+        int angle = event->angleDelta().y();
+        qreal factor;
+        if (angle > 0) {
+            factor = 1.1;
+        } else {
+            factor = 0.9;
+        }
+        view->scale(factor, factor);
+        view->setTransformationAnchor(anchor);
+    } else {
+        //view->wheelEvent(event);
+    }
+}
 
