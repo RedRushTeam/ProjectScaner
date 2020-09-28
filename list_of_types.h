@@ -33,17 +33,26 @@
 #include <QGraphicsItem>
 #include <QGraphicsPixmapItem>
 #include <QObject>
+#include <QDebug>
+#include <QMessageBox>
+#include <QValueAxis>
+#include <QChart>
+#include <QChartView>
+#include <QLogValueAxis>
+#include <QtCharts/QBarSeries>
+#include <QtCharts/QBarSet>
+#include <QtCharts/QLegend>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QStackedBarSeries>
 
 //my includes
-#include "help.h"
-#include "about.h"
-#include "change_size.h"
+//#include "help.h"
+//#include "about.h"
+//#include "change_size.h"
 
 //namespaces
-using namespace std;
-
-//enums
-
+//using namespace std;
+using namespace QtCharts;
 
 
 #endif // LIST_OF_TYPES_H

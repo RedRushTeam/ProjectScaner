@@ -1,5 +1,6 @@
 #ifndef ABOUT_H
 #define ABOUT_H
+#pragma once
 
 #include <QDialog>
 

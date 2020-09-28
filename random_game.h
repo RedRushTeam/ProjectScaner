@@ -1,11 +1,69 @@
 #ifndef RANDOM_GAME_H
 #define RANDOM_GAME_H
+#pragma once
 
-#include "list_of_types.h"
+#include "graphic_window.h"
 
-using namespace std;
+enum orientation_of_hero{left_, right_, up_, down_};
+enum type_of_fluctuation{no_fluct_, inactive_semiconductors_, active_semiconductors_, bluetooth_, _5g_, _4g_, _3g_, GPS_, radio_, GLONASS_};
 
-enum type_of_item{empty_, neprohod_object_, prohod_object_};
+//              kostil'
+class myGraphicsView : public QGraphicsView
+{
+    Q_OBJECT
+public:
+    myGraphicsView(QGraphicsScene* scene) {
+        //setDragMode(QGraphicsView::ScrollHandDrag);
+        this->setScene(scene);
+    }
+
+    void wheelEvent(QWheelEvent *event){
+        const QGraphicsView::ViewportAnchor anchor = this->transformationAnchor();
+        this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+        int angle = event->angleDelta().y();
+        qreal factor;
+
+        if (angle > 0)
+           factor = 1.1;
+        else
+           factor = 0.9;
+
+        this->scale(factor, factor);
+        this->setTransformationAnchor(anchor);
+    }
+};
+//              kostil'//
+
+//              kostil'
+class Pixmap : public QObject, public QGraphicsPixmapItem
+{
+    Q_OBJECT
+    Q_PROPERTY(QPointF pos READ pos WRITE setPos)
+public:
+    Pixmap(const QPixmap &pix)
+        : QObject(), QGraphicsPixmapItem(pix)
+    {
+        setCacheMode(DeviceCoordinateCache);
+    }
+};
+//              kostil'//
+
+//              kostil'
+class Hero : public QObject, public QGraphicsPixmapItem
+{
+    Q_OBJECT
+    Q_PROPERTY(QPointF pos READ pos WRITE setPos)
+public:
+    Hero(const QPixmap &pix)
+        : QObject(), QGraphicsPixmapItem(pix)
+    {
+        setCacheMode(DeviceCoordinateCache);
+    }
+
+    pair<int, int> coordinate;
+    orientation_of_hero _orientation_of_hero = left_;
+};
+//              kostil'//
 
 namespace Ui {
 class randome_game;
@@ -25,33 +83,28 @@ public:
     void generate_map();
     void set_scene_size();
     bool check_cycle(pair<int, int> coord) const;
-    void wheelEvent(QWheelEvent *event);
+    void add_hero();
+    void add_zakladka();
+    void generate_flukt();
+    void generate_graphik_perems();
+    void keyPressEvent(QKeyEvent *event);
+    void mousePressEvent(QMouseEvent *mEvent);
 
+    Hero* _hero;
     int height_of_map;
     int weight_of_map;
+    int col_vo_popytok = 3;
+    pair<int, int> _vibrannaya_kletka = make_pair(-1, -1);
+    pair<int, int> _coordinate_of_zakladka;
 
 
 private:
-    QGraphicsView* view;
+    myGraphicsView* view;
     QGraphicsScene* scene;
     Ui::randome_game *ui;
 
     vector<vector<type_of_item>> vec_of_soderzimoe;
+    vector<vector<type_of_fluctuation>> vec_of_fluct;
     std::mt19937* gen;
 };
-
-//              kostil'
-class Pixmap : public QObject, public QGraphicsPixmapItem
-{
-    Q_OBJECT
-    Q_PROPERTY(QPointF pos READ pos WRITE setPos)
-public:
-    Pixmap(const QPixmap &pix)
-        : QObject(), QGraphicsPixmapItem(pix)
-    {
-        setCacheMode(DeviceCoordinateCache);
-    }
-};
-//              kostil'//
-
 #endif // RANDOM_GAME_H

@@ -1,5 +1,6 @@
 #ifndef CHANGE_SIZE_H
 #define CHANGE_SIZE_H
+#pragma once
 
 #include "random_game.h"
 

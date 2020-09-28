@@ -1,7 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+#pragma once
 
-#include "list_of_types.h"
+#include "change_size.h"
+#include "about.h"
+#include "help.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

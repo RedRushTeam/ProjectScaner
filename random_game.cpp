@@ -11,8 +11,8 @@ randome_game::randome_game(QWidget *parent, int weight, int height) :
 
     QVBoxLayout* hbox = new QVBoxLayout(this);
 
-    this->scene = new QGraphicsScene(/*0, 0, 1280, 720*/);
-    this->view = new QGraphicsView(scene);
+    this->scene = new QGraphicsScene();
+    this->view = new myGraphicsView(scene);
 
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -23,6 +23,8 @@ randome_game::randome_game(QWidget *parent, int weight, int height) :
     hbox->addWidget(view);
 
     this->generate_map();
+    this->add_hero();
+    this->add_zakladka();
 }
 
 randome_game::~randome_game()
@@ -70,7 +72,9 @@ void randome_game::generate_map()
     for(int i = 0; i < this->vec_of_soderzimoe.size(); ++i)
         this->vec_of_soderzimoe[i].resize(this->weight_of_map + 2);
 
+
     //******************************************************* generate items on map ********************************************************
+
 
     //downloading textures
     QPixmap* wall_H = new QPixmap();
@@ -182,86 +186,162 @@ void randome_game::generate_map()
 
 }
 
-/*bool randome_game::check_cycle(pair<int, int> coord) const
-{
-    //proverka sosedey
-    if(this->vec_of_soderzimoe[coord.first][coord.second] != empty_)
-        return false;
-    pair<int, int> focuse = coord;
-    pair<int, int> previouse_focuse = coord;
-    vector<pair<int, int>> vec_of_needed_roads;
-    bool end_of_finding = true;
-
-    while(end_of_finding){
-        if(this->vec_of_soderzimoe[focuse.first + 1][focuse.second] != empty_ && (previouse_focuse != make_pair(focuse.first + 1, focuse.second)))
-            vec_of_needed_roads.push_back(make_pair(focuse.first + 1, focuse.second));
-        if(this->vec_of_soderzimoe[focuse.first + 1][focuse.second + 1] != empty_ && (previouse_focuse != make_pair(focuse.first + 1, focuse.second + 1)))
-            vec_of_needed_roads.push_back(make_pair(focuse.first + 1, focuse.second + 1));
-        if(this->vec_of_soderzimoe[focuse.first][focuse.second + 1] != empty_ && (previouse_focuse != make_pair(focuse.first, focuse.second + 1)))
-            vec_of_needed_roads.push_back(make_pair(focuse.first, focuse.second + 1));
-        if(this->vec_of_soderzimoe[focuse.first - 1][focuse.second] != empty_ && (previouse_focuse != make_pair(focuse.first - 1, focuse.second)))
-            vec_of_needed_roads.push_back(make_pair(focuse.first - 1, focuse.second));
-        if(this->vec_of_soderzimoe[focuse.first - 1][focuse.second - 1] != empty_ && (previouse_focuse != make_pair(focuse.first - 1, focuse.second - 1)))
-            vec_of_needed_roads.push_back(make_pair(focuse.first - 1, focuse.second - 1));
-        if(this->vec_of_soderzimoe[focuse.first][focuse.second - 1] != empty_ && (previouse_focuse != make_pair(focuse.first, focuse.second - 1)))
-            vec_of_needed_roads.push_back(make_pair(focuse.first, focuse.second - 1));
-        if(this->vec_of_soderzimoe[focuse.first + 1][focuse.second - 1] != empty_ && (previouse_focuse != make_pair(focuse.first + 1, focuse.second - 1)))
-            vec_of_needed_roads.push_back(make_pair(focuse.first + 1, focuse.second - 1));
-        if(this->vec_of_soderzimoe[focuse.first - 1][focuse.second + 1] != empty_ && (previouse_focuse != make_pair(focuse.first - 1, focuse.second + 1)))
-            vec_of_needed_roads.push_back(make_pair(focuse.first - 1, focuse.second + 1));
-
-        if(vec_of_needed_roads.empty())
-            return true;
-
-        previouse_focuse = focuse;
-        focuse = vec_of_needed_roads.front();
-
-        vec_of_needed_roads.pop_back();
-
-        if(focuse == coord)
-            return false;
-
-        //
-        //  xx    <-  need to add checking this situation
-        //  xx
-        //
-    }
-
-    //kostil'
-    return true;
-
-}*/
-
 void randome_game::set_scene_size()
 {
     scene->setSceneRect(0, 0, 128 * (this->weight_of_map + 2), 128 * (this->height_of_map + 2));
 }
 
-void randome_game::wheelEvent(QWheelEvent *event){      //отнаследоваться от QGraphicsView TODO
-    /*qreal scaleFactor=pow((double)2, -event->delta() / 240.0);
+void randome_game::add_hero()
+{
+    //adding hero
+    QPixmap* hero = new QPixmap();
+    hero->load(":/new/random_game_textures/new/random_game_textures/chair 128x128.jpg");
 
-    //qreal factor=this->view->transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
-    if (factor<0.0002 || factor>0.1950)
-        return;
+    this->_hero = new Hero(*hero);
+    this->vec_of_soderzimoe[1][1] = GG_;
+    this->_hero->coordinate = make_pair(1, 1);
+    _hero->setOffset(-hero->width()/2, -hero->height()/2);
+    _hero->setPos(192., 192.);
+    scene->addItem(_hero);
+}
 
-    this->view->scale(scaleFactor, scaleFactor);
-    this->view->resetCachedContent();*/
+void randome_game::add_zakladka()
+{
+    lablel_add_zakl:
+    int _x = this->generate_random_int_number(0, this->height_of_map + 1);
+    int _y = this->generate_random_int_number(0, this->weight_of_map + 1);
 
-    if (event->modifiers() & Qt::ControlModifier) {
-        // zoom
-        const QGraphicsView::ViewportAnchor anchor = view->transformationAnchor();
-        view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-        int angle = event->angleDelta().y();
-        qreal factor;
-        if (angle > 0) {
-            factor = 1.1;
-        } else {
-            factor = 0.9;
+    if(this->vec_of_soderzimoe[_x][_y] != neprohod_object_)
+        goto lablel_add_zakl;
+
+    this->_coordinate_of_zakladka = make_pair(_x, _y);
+    qDebug() << "zakl coord" << _x << _y;
+}
+
+void randome_game::generate_flukt()         //mabe rewrite this     //TODO ADD POWER
+{
+    int total_size_of_map = this->weight_of_map * this->height_of_map;     //100 minimum, 6400 maximum
+    int mnozitel = total_size_of_map / 100;
+
+    int total_fluct = this->generate_random_int_number(3, 5) * mnozitel;
+
+    for(int i = 0; i < total_fluct; ++i){
+        bool bez_nositelya = this->generate_random_int_number(0, 1);
+        if(bez_nositelya){
+            label_flukt_bez_nositelya:
+            auto sh = this->generate_random_int_number(0, this->weight_of_map + 1);
+            auto v = this->generate_random_int_number(0, this->height_of_map + 1);
+            if(this->vec_of_fluct[v][sh] != no_fluct_)
+                goto label_flukt_bez_nositelya;
+            type_of_fluctuation _type_of_fluctuation = static_cast<type_of_fluctuation>(this->generate_random_int_number(4, 9));    //magic numbers
+            this->vec_of_fluct[v][sh] = _type_of_fluctuation;
         }
-        view->scale(factor, factor);
-        view->setTransformationAnchor(anchor);
-    } else {
-        //view->wheelEvent(event);
+        else{
+            label_flukt_s_nositelem:
+            auto sh = this->generate_random_int_number(0, this->weight_of_map + 1);
+            auto v = this->generate_random_int_number(0, this->height_of_map + 1);
+            if(this->vec_of_fluct[v][sh] != no_fluct_ || (this->vec_of_soderzimoe[v][sh] == empty_))
+                goto label_flukt_s_nositelem;
+            type_of_fluctuation _type_of_fluctuation = static_cast<type_of_fluctuation>(this->generate_random_int_number(1, 3));    //magic numbers
+            this->vec_of_fluct[v][sh] = _type_of_fluctuation;
+        }
     }
 }
 
+void randome_game::generate_graphik_perems()
+{
+    QStackedBarSeries *series = new QStackedBarSeries();
+    QBarSet *set = new QBarSet("");
+    //*set << data.first.y();
+    //series->append(set);
+}
+
+void randome_game::keyPressEvent(QKeyEvent *event)              ////////TODO ADD normal sleep
+{
+    if(event->key() == Qt::Key_W || event->key() == 0x0426)
+         if(this->vec_of_soderzimoe[this->_hero->coordinate.first - 1][this->_hero->coordinate.second] == empty_){
+             this->vec_of_soderzimoe[this->_hero->coordinate.first - 1][this->_hero->coordinate.second] = GG_;
+             this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
+             this->_hero->coordinate = make_pair(this->_hero->coordinate.first - 1, this->_hero->coordinate.second);
+             this->_hero->setPos(this->_hero->pos().x(), this->_hero->pos().y() - 128.);
+             this->_hero->_orientation_of_hero = orientation_of_hero::up_;
+             //texture swaping
+             if(this->_hero->_orientation_of_hero != orientation_of_hero::right_){
+                 this->_hero->_orientation_of_hero = orientation_of_hero::up_;
+                 //
+             }
+             Sleep(250);
+         }
+
+    if(event->key() == Qt::Key_A || event->key() == 0x0424)
+        if(this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second - 1] == empty_){
+            this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second - 1] = GG_;
+            this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
+            this->_hero->coordinate = make_pair(this->_hero->coordinate.first, this->_hero->coordinate.second - 1);
+            this->_hero->setPos(this->_hero->pos().x() - 128., this->_hero->pos().y());
+            //texture swaping
+            if(this->_hero->_orientation_of_hero != orientation_of_hero::left_){
+                this->_hero->_orientation_of_hero = orientation_of_hero::left_;
+                //
+            }
+            Sleep(250);
+        }
+
+    if(event->key() == Qt::Key_S || event->key() == 0x042b)
+        if(this->vec_of_soderzimoe[this->_hero->coordinate.first + 1][this->_hero->coordinate.second] == empty_){
+            this->vec_of_soderzimoe[this->_hero->coordinate.first + 1][this->_hero->coordinate.second] = GG_;
+            this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
+            this->_hero->coordinate = make_pair(this->_hero->coordinate.first + 1, this->_hero->coordinate.second);
+            this->_hero->setPos(this->_hero->pos().x(), this->_hero->pos().y() + 128.);
+            //texture swaping
+            if(this->_hero->_orientation_of_hero != orientation_of_hero::down_){
+                this->_hero->_orientation_of_hero = orientation_of_hero::down_;
+                //
+            }
+            Sleep(250);
+        }
+
+    if(event->key() == Qt::Key_D || event->key() == 0x0412)
+        if(this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second + 1] == empty_){
+            this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second + 1] = GG_;
+            this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
+            this->_hero->coordinate = make_pair(this->_hero->coordinate.first, this->_hero->coordinate.second + 1);
+            this->_hero->setPos(this->_hero->pos().x() + 128., this->_hero->pos().y());
+
+            //texture swaping
+            if(this->_hero->_orientation_of_hero != orientation_of_hero::right_){
+               this->_hero->_orientation_of_hero = orientation_of_hero::right_;
+                //
+            }
+            Sleep(250);
+        }
+
+    if(event->key() == Qt::Key_Return)
+        if((this->vec_of_soderzimoe[this->_vibrannaya_kletka.first][this->_vibrannaya_kletka.second] != empty_) &&
+                    (this->vec_of_soderzimoe[this->_vibrannaya_kletka.first][this->_vibrannaya_kletka.second] != GG_)){
+            if(this->_coordinate_of_zakladka == _vibrannaya_kletka)
+                QMessageBox::warning(this, "Поздравляю, вы нашли закладку!", "Поздравляю, вы нашли закладку!");
+            else{
+                this->col_vo_popytok = this->col_vo_popytok - 1;
+                if(col_vo_popytok == 0){
+                    QMessageBox::warning(this, "Мимо!", "Вы проиграли!");
+                    return;
+                }
+                QMessageBox::warning(this, "Мимо!", "У вас осталось " + QString::number(this->col_vo_popytok) + " попыток!");
+            }
+        }
+
+    if(event->key() == Qt::Key_G || event->key() == 0x041f)
+        nullptr;    //graphiс window generation TODO
+}
+
+void randome_game::mousePressEvent(QMouseEvent *mEvent)
+{
+    auto x = mEvent->windowPos().x();
+    auto y = mEvent->windowPos().y();
+    //qDebug() << "raw coord" << x << y;
+    this->_vibrannaya_kletka = make_pair(this->view->mapToScene(mEvent->windowPos().x(), mEvent->windowPos().y()).x(), this->view->mapToScene(mEvent->windowPos().x(), mEvent->windowPos().y()).y());   //i dont now how it working, but it working!
+    //qDebug() << "scene coord" << _vibrannaya_kletka.first << _vibrannaya_kletka.second;
+    this->_vibrannaya_kletka = make_pair(floor(this->_vibrannaya_kletka.second / 128), floor(this->_vibrannaya_kletka.first / 128));
+    //qDebug() << "normalized coord" << _vibrannaya_kletka.first << _vibrannaya_kletka.second;
+}
