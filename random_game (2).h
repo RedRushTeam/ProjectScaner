@@ -60,7 +60,7 @@ public:
     }
 
     pair<int, int> coordinate;
-    orientation_of_hero _orientation_of_hero = down_;
+    orientation_of_hero _orientation_of_hero = left_;
 };
 //              kostil'//
 
@@ -84,28 +84,17 @@ public:
     bool check_cycle(pair<int, int> coord) const;
     void add_hero();
     void add_zakladka();
-    void generate_flukt();
-    void generate_graphik_perems();
-    void add_concret_fluct(int start, int length, float power_of_fluct);
-    bool is_coordinate_is_normal(pair<int, int> _coordinate) const;
+    //void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void mousePressEvent(QMouseEvent *mEvent);
-    void keyReleaseEvent(QKeyEvent *event);
 
     Hero* _hero;
     int height_of_map;
     int weight_of_map;
     int col_vo_popytok = 3;
     pair<int, int> _vibrannaya_kletka = make_pair(-1, -1);
-    Pixmap* _pix_chaged_cell = nullptr;
     pair<int, int> _coordinate_of_zakladka;
-    QTimer* _timer;
-    bool is_move_possible = true;
-    list<int> _list_of_pushed_buttons;
 
-
-private slots:
-    void slotTimerAlarm();
 
 private:
     myGraphicsView* view;
@@ -113,10 +102,6 @@ private:
     Ui::randome_game *ui;
 
     vector<vector<type_of_item>> vec_of_soderzimoe;
-    vector<vector<pair<type_of_fluctuation, float>>> vec_of_fluct;
-    vector<vector<Pixmap*>> vec_of_pixmaps;
-    vector<pair<float, float>>* vec_of_graphik;
-    //vector<pair<orientation_of_hero, vector<vector<signal_graphik>>>> strange_vector_of_graphiks;
     std::mt19937* gen;
 };
 #endif // RANDOM_GAME_H

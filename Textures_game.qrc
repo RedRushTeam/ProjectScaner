@@ -10,5 +10,6 @@
         <file>new/random_game_textures/chair 128x128.jpg</file>
         <file>new/random_game_textures/divanH 256x128.jpg</file>
         <file>new/random_game_textures/tableH 384x128.jpg</file>
+        <file>new/random_game_textures/red_square128x128.png</file>
     </qresource>
 </RCC>

@@ -10,6 +10,7 @@
 #include <random>
 #include <ctime>
 #include <utility>
+#include <iterator>
 
 //QT includes
 #include <QtWidgets/QtWidgets>
@@ -44,6 +45,9 @@
 #include <QtCharts/QLegend>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QStackedBarSeries>
+#include <QtCharts/QBarCategoryAxis>
+#include <QTimer>
+#include <QTime>
 
 //my includes
 //#include "help.h"
@@ -51,7 +55,7 @@
 //#include "change_size.h"
 
 //namespaces
-//using namespace std;
+using namespace std;
 using namespace QtCharts;
 
 
