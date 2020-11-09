@@ -4,53 +4,60 @@
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent)
 {
-    QVBoxLayout *vbox = new QVBoxLayout(this);
+    vbox = new QVBoxLayout(this);
 
-    vbox->setContentsMargins(50, 5, 50, 50);
-    vbox->setSpacing(10);
+    vbox->setContentsMargins(100, 15, 100, 200);
+    vbox->setSpacing(20);
 
-    QFont font_for_buttons("Times new roman", 14, QFont::Bold);
+    QFont font_for_buttons("Times new roman", 18, QFont::Bold);
 
-    QFont font_for_label("Times new roman", 18, QFont::ExtraBold);
+    QFont font_for_label("Times new roman", 24, QFont::ExtraBold);
 
-    QLabel *title = new QLabel("Project SCANER", this);
+    title = new QLabel("Project SCANER", this);
     title->setFont(font_for_buttons);
     title->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     vbox->addWidget(title);
 
-    QPushButton *start_with_rand = new QPushButton("Случайный режим", this);
+    start_with_rand = new QPushButton("Случайный режим", this);
     start_with_rand->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     start_with_rand->setCursor(QCursor(Qt::PointingHandCursor));
+    start_with_rand->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 16px;     min-width: 10em;     padding: 6px}");
     start_with_rand->setFont(font_for_buttons);
     vbox->addWidget(start_with_rand);
 
-    QPushButton *start_with_prep = new QPushButton("Режим с преподавателем", this);
+
+    start_with_prep = new QPushButton("Режим с преподавателем", this);
     start_with_prep->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     start_with_prep->setCursor(QCursor(Qt::PointingHandCursor));
+    start_with_prep->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 16px;     min-width: 10em;     padding: 6px}");
     start_with_prep->setFont(font_for_buttons);
     vbox->addWidget(start_with_prep);
 
-    QPushButton *start_with_settings = new QPushButton("Настраиваемый режим", this);
+    start_with_settings = new QPushButton("Настраиваемый режим", this);
     start_with_settings->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     start_with_settings->setCursor(QCursor(Qt::PointingHandCursor));
+    start_with_settings->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 16px;     min-width: 10em;     padding: 6px}");
     start_with_settings->setFont(font_for_buttons);
     vbox->addWidget(start_with_settings);
 
-    QPushButton *help_ = new QPushButton("Помощь", this);
+    help_ = new QPushButton("Помощь", this);
     help_->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     help_->setCursor(QCursor(Qt::PointingHandCursor));
+    help_->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 16px;     min-width: 10em;     padding: 6px}");
     help_->setFont(font_for_buttons);
     vbox->addWidget(help_);
 
-    QPushButton *about_ = new QPushButton("О программе", this);
+    about_ = new QPushButton("О программе", this);
     about_->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     about_->setCursor(QCursor(Qt::PointingHandCursor));
+    about_->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 16px;     min-width: 10em;     padding: 6px}");
     about_->setFont(font_for_buttons);
     vbox->addWidget(about_);
 
-    QPushButton *exit_ = new QPushButton("Выход", this);
+    exit_ = new QPushButton("Выход", this);
     exit_->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     exit_->setCursor(QCursor(Qt::PointingHandCursor));
+    exit_->setStyleSheet("QPushButton {      background-color: rgba(0, 0, 0, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 16px;     min-width: 10em;     padding: 6px}");
     exit_->setFont(font_for_buttons);
     vbox->addWidget(exit_);
 
@@ -62,6 +69,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(start_with_settings, &QPushButton::clicked, this, &MainWindow::open_constr_window);
 
     this->setMinimumSize(720, 420);
+    //this->showMaximized();
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *mEvent)
+{
+    this->view->mapToScene(mEvent->windowPos().x(), mEvent->windowPos().y()).x(), this->view->mapToScene(mEvent->windowPos().x(), mEvent->windowPos().y()).y();
 }
 
 void MainWindow::open_help_window() const

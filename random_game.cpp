@@ -13,6 +13,18 @@ randome_game::randome_game(QWidget *parent, int weight, int height) :
     this->_timer->setTimerType(Qt::TimerType::CoarseTimer);
     connect(_timer, SIGNAL(timeout()), this, SLOT(slotTimerAlarm()));
 
+    this->_timer_stop_animation = new QTimer();
+    this->_timer_stop_animation->setTimerType(Qt::TimerType::PreciseTimer);
+    this->_timer_stop_animation->setInterval(256);
+    this->_timer_stop_animation->stop();
+    connect(_timer_stop_animation, SIGNAL(timeout()), this, SLOT(slotTimerStopAnimationAlarm()));
+
+    this->_timer_for_change_position = new QTimer();
+    this->_timer_for_change_position->setTimerType(Qt::TimerType::PreciseTimer);
+    this->_timer_for_change_position->setInterval(8);
+    this->_timer_for_change_position->stop();
+    connect(_timer_for_change_position, SIGNAL(timeout()), this, SLOT(slotTimerChangePositionAlarm()));
+
     QVBoxLayout* hbox = new QVBoxLayout(this);
 
     this->scene = new QGraphicsScene();
@@ -27,9 +39,13 @@ randome_game::randome_game(QWidget *parent, int weight, int height) :
     hbox->addWidget(view);
 
     //allocating memory
-    //3th formanta
-    this->vec_of_graphik = new vector<pair<float, float>>();
-    this->vec_of_graphik->resize(5550); //4islo otshetov na graphike
+    //2th formanta
+    this->vec_of_graphik_of_second_formanta = new vector<pair<float, float>>();
+    this->vec_of_graphik_of_second_formanta->resize(5550); //4islo otshetov na graphike
+
+    //3th_formanta
+    //this->vec_of_graphik_of_trird_formanta = new vector<pair<float, float>>();
+    //this->vec_of_graphik_of_trird_formanta->resize(5550); //4islo otshetov na graphike
 
     this->generate_map();
     this->generate_flukt();
@@ -223,7 +239,7 @@ void randome_game::add_hero()
 {
     //adding hero
     QPixmap* hero = new QPixmap();
-    hero->load(":/new/random_game_textures/new/random_game_textures/chair 128x128.jpg");
+    hero->load(":/new/random_game_textures/new/random_game_textures/Animation.gif");
 
     this->_hero = new Hero(*hero);
     this->vec_of_soderzimoe[1][1] = GG_;
@@ -281,8 +297,8 @@ void randome_game::generate_flukt()         //mabe rewrite this     //TODO CHECK
 void randome_game::generate_graphik_perems()    //TODO test this code
 {
     //adding shum
-    for(int i = 0; i < this->vec_of_graphik->size(); ++i)
-        this->vec_of_graphik->operator[](i) = make_pair(static_cast<float>(i + 450), static_cast<float>(this->generate_random_int_number(8, 15)));
+    for(int i = 0; i < this->vec_of_graphik_of_second_formanta->size(); ++i)
+        this->vec_of_graphik_of_second_formanta->operator[](i) = make_pair(static_cast<float>(i + 450), static_cast<float>(this->generate_random_int_number(8, 15)));
 
     //
     auto coordinate_of_hero = this->_hero->coordinate;
@@ -384,6 +400,8 @@ void randome_game::generate_graphik_perems()    //TODO test this code
         else
             ++counter;
 
+    this->vec_of_graphik_of_trird_formanta = new vector<pair<float, float>>(*this->vec_of_graphik_of_second_formanta);
+
     //вставка флуктуаций на график
     for(auto obj : vec_of_visible_fluct){
         auto type_ = obj.second.first;
@@ -393,72 +411,85 @@ void randome_game::generate_graphik_perems()    //TODO test this code
         switch (type_) {
         case inactive_semiconductors_:
             //4800-4990
-            this->add_concret_fluct(4800, 190, power_of_fluct);
+            this->add_concret_fluct_second_formanta(4800, 190, power_of_fluct);
         break;
 
         case active_semiconductors_:
             //4800-4990
-            this->add_concret_fluct(4800, 190, power_of_fluct);
+            this->add_concret_fluct_second_formanta(4800, 190, power_of_fluct);
         break;
 
         case bluetooth_:
             //4800-4990
-            this->add_concret_fluct(4800, 190, power_of_fluct);
+            this->add_concret_fluct_second_formanta(4800, 190, power_of_fluct);
         break;
 
         case _5g_:  //TODO НАПИСАТЬ АНАЛОГИЧНЫЙ КОД ДЛЯ ДРУГИХ ФЛУКТУАЦИЙ
             //4800-4990
-            this->add_concret_fluct(4800, 190, power_of_fluct);
+            this->add_concret_fluct_second_formanta(4800, 190, power_of_fluct);
         break;
 
         case _4g_:
             //452-467
-            this->add_concret_fluct(452, 15, power_of_fluct);
+            this->add_concret_fluct_second_formanta(452, 15, power_of_fluct);
 
             //720-791
-            this->add_concret_fluct(720, 71, power_of_fluct);
+            this->add_concret_fluct_second_formanta(720, 71, power_of_fluct);
 
             //2500-2570
-            this->add_concret_fluct(2500, 70, power_of_fluct);
+            this->add_concret_fluct_second_formanta(2500, 70, power_of_fluct);
         break;
 
         case _3g_:
             //1920-1980
-            this->add_concret_fluct(1920, 60, power_of_fluct);
+            this->add_concret_fluct_second_formanta(1920, 60, power_of_fluct);
 
             //2500-2570
-            this->add_concret_fluct(2500, 70, power_of_fluct);
+            this->add_concret_fluct_second_formanta(2500, 70, power_of_fluct);
         break;
 
         case GPS_:
             //4800-4990
-            this->add_concret_fluct(4800, 190, power_of_fluct);
+            this->add_concret_fluct_second_formanta(4800, 190, power_of_fluct);
         break;
 
         case radio_:
             //4800-4990
-            this->add_concret_fluct(4800, 190, power_of_fluct);
+            this->add_concret_fluct_second_formanta(4800, 190, power_of_fluct);
         break;
 
         case GLONASS_:
             //4800-4990
-            this->add_concret_fluct(4800, 190, power_of_fluct);
+            this->add_concret_fluct_second_formanta(4800, 190, power_of_fluct);
         break;
         }
 
     }
 }
 
-void randome_game::add_concret_fluct(int start, int length, float power_of_fluct)
+void randome_game::add_concret_fluct_second_formanta(int start, int length, float power_of_fluct)
 {
     for(int i = 0; i < length; ++i){
         bool is_power_wil_be_lower_than_etalon = this->generate_random_int_number(0, 1);
         float power_of_this_ots;
         if(is_power_wil_be_lower_than_etalon)
-            power_of_this_ots = power_of_fluct + (this->generate_random_int_number(1, power_of_fluct * 0.1));       //shit
+            power_of_this_ots = power_of_fluct + (this->generate_random_int_number(1, power_of_fluct * 0.1));
         else
             power_of_this_ots = power_of_fluct + (- this->generate_random_int_number(1, power_of_fluct * 0.1));
-        this->vec_of_graphik->operator[](start + i) = make_pair(this->vec_of_graphik->operator[](start + i).first, power_of_this_ots);
+        this->vec_of_graphik_of_second_formanta->operator[](start + i) = make_pair(this->vec_of_graphik_of_second_formanta->operator[](start + i).first, power_of_this_ots);
+    }
+}
+
+void randome_game::add_concret_fluct_trird_formanta(int start, int length, float power_of_fluct)
+{
+    for(int i = 0; i < length; ++i){
+        bool is_power_wil_be_lower_than_etalon = this->generate_random_int_number(0, 1);
+        float power_of_this_ots;
+        if(is_power_wil_be_lower_than_etalon)
+            power_of_this_ots = power_of_fluct + (this->generate_random_int_number(1, power_of_fluct * 0.1));
+        else
+            power_of_this_ots = power_of_fluct + (- this->generate_random_int_number(1, power_of_fluct * 0.1));
+        this->vec_of_graphik_of_trird_formanta->operator[](start + i) = make_pair(this->vec_of_graphik_of_trird_formanta->operator[](start + i).first, power_of_this_ots);
     }
 }
 
@@ -478,145 +509,111 @@ void randome_game::keyPressEvent(QKeyEvent *event)              //TODO ADD diago
     if(!this->is_move_possible)
         return;
 
-    _list_of_pushed_buttons.push_back(event->key());        //это для двойных клавиш, но нужны ли они?
+    //_list_of_pushed_buttons.push_back(event->key());        //это для двойных клавиш, но нужны ли они?
 
-    //if(_list_of_pushed_buttons.)
 
-    if(event->key() == Qt::Key_W || event->key() == 0x0426)
+    if(event->key() == Qt::Key_W || event->key() == 0x0426){
          if(this->vec_of_soderzimoe[this->_hero->coordinate.first - 1][this->_hero->coordinate.second] == empty_){
+
              this->vec_of_soderzimoe[this->_hero->coordinate.first - 1][this->_hero->coordinate.second] = GG_;
              this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
              this->_hero->coordinate = make_pair(this->_hero->coordinate.first - 1, this->_hero->coordinate.second);
-             this->_hero->setPos(this->_hero->pos().x(), this->_hero->pos().y() - 128.);
              //texture swaping
              if(this->_hero->_orientation_of_hero != orientation_of_hero::up_){
-                 switch (this->_hero->_orientation_of_hero) {
-                 case orientation_of_hero::right_:
-                     this->_hero->setRotation(270.);
-                     this->_hero->update();
-                     break;
-                 case orientation_of_hero::down_:
-                     this->_hero->setRotation(180.);
-                     this->_hero->update();
-                     break;
-                 case orientation_of_hero::left_:
-                     this->_hero->setRotation(90.);
-                     this->_hero->update();
-                     break;
-                 }
+                 this->_hero->setRotation(180.);
+                 this->_hero->update();
              }
-
              this->_hero->_orientation_of_hero = orientation_of_hero::up_;
 
-             if(this->_pix_chaged_cell != nullptr){
-                 this->_pix_chaged_cell->hide();
-                 this->_pix_chaged_cell = nullptr;
-             }
-
-             this->is_move_possible = false;
-             this->_timer->setInterval(250);
-             this->_timer->start();
-             //Sleep(250);
+             this->start_animation_and_move_hero();
          }
+         else{
+             //texture swaping without move
+             if(this->_hero->_orientation_of_hero != orientation_of_hero::up_){
+                 this->_hero->setRotation(180.);
+                 this->_hero->update();
+             }
+             this->_hero->_orientation_of_hero = orientation_of_hero::up_;
+         }
+    }
 
-    if(event->key() == Qt::Key_A || event->key() == 0x0424)
+    if(event->key() == Qt::Key_A || event->key() == 0x0424){
         if(this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second - 1] == empty_){
             this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second - 1] = GG_;
             this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
             this->_hero->coordinate = make_pair(this->_hero->coordinate.first, this->_hero->coordinate.second - 1);
-            this->_hero->setPos(this->_hero->pos().x() - 128., this->_hero->pos().y());
             //texture swaping
             if(this->_hero->_orientation_of_hero != orientation_of_hero::left_){
-                switch (this->_hero->_orientation_of_hero) {
-                case orientation_of_hero::right_:
-                    this->_hero->setRotation(180.);
-                    break;
-                case orientation_of_hero::up_:
-                    this->_hero->setRotation(270.);
-                    break;
-                case orientation_of_hero::down_:
-                    this->_hero->setRotation(90.);
-                    break;
-                }
+                this->_hero->setRotation(90.);
+                this->_hero->update();
                 this->_hero->_orientation_of_hero = orientation_of_hero::left_;
             }
 
-            if(this->_pix_chaged_cell != nullptr){
-                this->_pix_chaged_cell->hide();
-                this->_pix_chaged_cell = nullptr;
-            }
-
-            this->is_move_possible = false;
-            this->_timer->setInterval(250);
-            this->_timer->start();
+            this->start_animation_and_move_hero();
         }
+        else{
+            //texture swaping without move
+            if(this->_hero->_orientation_of_hero != orientation_of_hero::left_){
+                this->_hero->setRotation(90.);
+                this->_hero->update();
+                this->_hero->_orientation_of_hero = orientation_of_hero::left_;
+            }
+        }
+   }
 
-    if(event->key() == Qt::Key_S || event->key() == 0x042b)
+    if(event->key() == Qt::Key_S || event->key() == 0x042b){
         if(this->vec_of_soderzimoe[this->_hero->coordinate.first + 1][this->_hero->coordinate.second] == empty_){
             this->vec_of_soderzimoe[this->_hero->coordinate.first + 1][this->_hero->coordinate.second] = GG_;
             this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
             this->_hero->coordinate = make_pair(this->_hero->coordinate.first + 1, this->_hero->coordinate.second);
-            this->_hero->setPos(this->_hero->pos().x(), this->_hero->pos().y() + 128.);
             //texture swaping
             if(this->_hero->_orientation_of_hero != orientation_of_hero::down_){
-                switch (this->_hero->_orientation_of_hero) {
-                case orientation_of_hero::right_:
-                    this->_hero->setRotation(90.);
-                    break;
-                case orientation_of_hero::up_:
-                    this->_hero->setRotation(180.);
-                    break;
-                case orientation_of_hero::left_:
-                    this->_hero->setRotation(270);
-                    break;
-                }
+                this->_hero->setRotation(0.);
+                this->_hero->update();
             }
             this->_hero->_orientation_of_hero = orientation_of_hero::down_;
 
-            if(this->_pix_chaged_cell != nullptr){
-                this->_pix_chaged_cell->hide();
-                this->_pix_chaged_cell = nullptr;
-            }
-
-            this->is_move_possible = false;
-            this->_timer->setInterval(250);
-            this->_timer->start();
+            this->start_animation_and_move_hero();
         }
+        else{
+            //texture swaping without move
+            if(this->_hero->_orientation_of_hero != orientation_of_hero::down_){
+                this->_hero->setRotation(0.);
+                this->_hero->update();
+            }
+            this->_hero->_orientation_of_hero = orientation_of_hero::down_;
+        }
+   }
 
-    if(event->key() == Qt::Key_D || event->key() == 0x0412)
+    if(event->key() == Qt::Key_D || event->key() == 0x0412){
         if(this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second + 1] == empty_){
             this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second + 1] = GG_;
             this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
             this->_hero->coordinate = make_pair(this->_hero->coordinate.first, this->_hero->coordinate.second + 1);
-            this->_hero->setPos(this->_hero->pos().x() + 128., this->_hero->pos().y());
-
             //texture swaping
             if(this->_hero->_orientation_of_hero != orientation_of_hero::right_){
-                switch (this->_hero->_orientation_of_hero) {
-                case orientation_of_hero::down_:
-                    this->_hero->setRotation(270.);      //все в обратную сторону
-                    break;
-                case orientation_of_hero::up_:
-                    this->_hero->setRotation(90.);
-                    break;
-                case orientation_of_hero::left_:
-                    this->_hero->setRotation(180.);
-                    break;
-                }
-               this->_hero->_orientation_of_hero = orientation_of_hero::right_;
+                this->_hero->setRotation(270.);
+                this->_hero->update();
             }
+            this->_hero->_orientation_of_hero = orientation_of_hero::right_;
 
-            if(this->_pix_chaged_cell != nullptr){
-                this->_pix_chaged_cell->hide();
-                this->_pix_chaged_cell = nullptr;
-            }
-
-            this->is_move_possible = false;
-            this->_timer->setInterval(250);
-            this->_timer->start();
+            this->start_animation_and_move_hero();
         }
+        else{
+            //texture swaping without move
+            if(this->_hero->_orientation_of_hero != orientation_of_hero::right_){
+                this->_hero->setRotation(270.);
+                this->_hero->update();
+            }
+            this->_hero->_orientation_of_hero = orientation_of_hero::right_;
+        }
+   }
 
-    if(event->key() == Qt::Key_Return)
+    if(event->key() == Qt::Key_Return){
+        if(this->_vibrannaya_kletka.first == -1 || (this->_vibrannaya_kletka.second == -1))
+            return;
+
+
         if((this->vec_of_soderzimoe[this->_vibrannaya_kletka.first][this->_vibrannaya_kletka.second] != empty_) &&
                     (this->vec_of_soderzimoe[this->_vibrannaya_kletka.first][this->_vibrannaya_kletka.second] != GG_)){
             if(this->_coordinate_of_zakladka == _vibrannaya_kletka)
@@ -630,11 +627,13 @@ void randome_game::keyPressEvent(QKeyEvent *event)              //TODO ADD diago
                 QMessageBox::warning(this, "Мимо!", "У вас осталось " + QString::number(this->col_vo_popytok) + " попыток!");
             }
         }
+    }
 
     if(event->key() == Qt::Key_G || event->key() == 0x041f){
+
         this->generate_graphik_perems();
 
-        auto graphik_window = new graphic_window(&(this->vec_of_soderzimoe), &(this->vec_of_fluct), this->vec_of_graphik, this);
+        auto graphik_window = new graphic_window(&(this->vec_of_soderzimoe), &(this->vec_of_fluct), this->vec_of_graphik_of_second_formanta, this->vec_of_graphik_of_trird_formanta, this);
         graphik_window->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);
         graphik_window->setWindowTitle("Просмотр графика");
         graphik_window->showMaximized();
@@ -680,8 +679,81 @@ void randome_game::keyReleaseEvent(QKeyEvent *event)
         }
 }
 
+void randome_game::move_hero()  //должен вызываться уже после установки нового направления героя!
+{
+    switch (this->_hero->_orientation_of_hero) {
+
+    case up_:
+        this->_hero->setPos(this->_hero->pos().x(), this->_hero->pos().y() - 4.);
+        this->_hero->update();
+        break;
+
+    case down_:
+        this->_hero->setPos(this->_hero->pos().x(), this->_hero->pos().y() + 4.);
+        this->_hero->update();
+        break;
+
+    case left_:
+        this->_hero->setPos(this->_hero->pos().x() - 4., this->_hero->pos().y());
+        this->_hero->update();
+        break;
+
+    case right_:
+        this->_hero->setPos(this->_hero->pos().x() + 4., this->_hero->pos().y());
+        this->_hero->update();
+        break;
+    }
+}
+
+void randome_game::start_animation_and_move_hero()
+{
+    //запускаем анимацию у героя
+    this->_hero->mo->start();
+    this->_hero->_timer->setInterval(500);
+    this->_hero->_timer->start();
+    this->_hero->_timer_obnovl->setInterval(10);
+    this->_hero->_timer_obnovl->start();
+
+    //запускаем анимацию на сцене
+    this->_timer_stop_animation->setInterval(256);
+    this->_timer_for_change_position->setInterval(8);
+    this->_timer_stop_animation->start();
+    this->_timer_for_change_position->start();
+
+    if(this->_pix_chaged_cell != nullptr){
+        this->_pix_chaged_cell->hide();
+        this->_pix_chaged_cell = nullptr;
+    }
+
+    this->is_move_possible = false;
+    this->_timer->setInterval(256);
+    this->_timer->start();
+}
+
 void randome_game::slotTimerAlarm()
 {
     this->is_move_possible = true;
     this->_timer->stop();
+}
+
+void randome_game::slotTimerStopAnimationAlarm()
+{
+    this->_timer_for_change_position->stop();
+    this->_timer_stop_animation->setInterval(256);
+    float new_pos_x = round((this->_hero->pos().x() - 64.) / 128.) * 128. + 64.;
+    float new_pos_y = round((this->_hero->pos().y() - 64.) / 128.) * 128. + 64.;
+    this->_hero->setPos(new_pos_x, new_pos_y);
+    this->_hero->update();
+
+    //this
+
+    //qDebug() << this->_hero->pos().x() << " " << this->_hero->pos().y();
+    this->_timer_stop_animation->stop();
+}
+
+void randome_game::slotTimerChangePositionAlarm()
+{
+    this->_timer_for_change_position->setInterval(8);
+    this->_timer_for_change_position->start();
+    this->move_hero();
 }

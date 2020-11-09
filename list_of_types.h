@@ -9,6 +9,7 @@
 #include <string>
 #include <random>
 #include <ctime>
+#include <set>
 #include <utility>
 #include <iterator>
 
@@ -48,6 +49,7 @@
 #include <QtCharts/QBarCategoryAxis>
 #include <QTimer>
 #include <QTime>
+#include <QMovie>
 
 //my includes
 //#include "help.h"

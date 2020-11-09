@@ -57,10 +57,51 @@ public:
         : QObject(), QGraphicsPixmapItem(pix)
     {
         setCacheMode(DeviceCoordinateCache);
+        this->_timer = new QTimer();
+        this->_timer->setTimerType(Qt::TimerType::PreciseTimer);
+        this->_timer->setInterval(500);
+        this->_timer->stop();
+
+        this->_timer_obnovl = new QTimer();
+        this->_timer_obnovl->setTimerType(Qt::TimerType::PreciseTimer);
+        this->_timer_obnovl->setInterval(10);
+        this->_timer_obnovl->stop();
+
+        connect(_timer, SIGNAL(timeout()), this, SLOT(slotTimerAlarm()));
+        connect(_timer_obnovl, SIGNAL(timeout()), this, SLOT(slotTimerAlarm1()));
+        this->mo = new QMovie();
+        this->mo->setCacheMode(QMovie::CacheAll);
+        this->mo->setSpeed(125);
+        this->mo->setFileName(":/new/random_game_textures/new/random_game_textures/Animation.gif");
     }
 
+    QTimer* _timer_obnovl;
+    QTimer* _timer;
+    QMovie* mo;
     pair<int, int> coordinate;
     orientation_of_hero _orientation_of_hero = down_;
+
+private slots:
+    void slotTimerAlarm()
+    {
+        //
+        //qDebug() << QString("Таймер встал");
+        this->_timer->setInterval(500);
+        this->_timer->stop();
+        this->mo->stop();
+        this->_timer_obnovl->stop();
+        this->mo->jumpToFrame(0);
+        this->setPixmap(this->mo->currentPixmap());
+    }
+
+    void slotTimerAlarm1()
+    {
+        //
+        this->setPixmap(this->mo->currentPixmap());
+        this->update();
+        this->_timer_obnovl->setInterval(10);
+        this->_timer_obnovl->start();
+    }
 };
 //              kostil'//
 
@@ -86,11 +127,14 @@ public:
     void add_zakladka();
     void generate_flukt();
     void generate_graphik_perems();
-    void add_concret_fluct(int start, int length, float power_of_fluct);
+    void add_concret_fluct_second_formanta(int start, int length, float power_of_fluct);
+    void add_concret_fluct_trird_formanta(int start, int length, float power_of_fluct);
     bool is_coordinate_is_normal(pair<int, int> _coordinate) const;
     void keyPressEvent(QKeyEvent *event);
     void mousePressEvent(QMouseEvent *mEvent);
     void keyReleaseEvent(QKeyEvent *event);
+    void move_hero();
+    void start_animation_and_move_hero();
 
     Hero* _hero;
     int height_of_map;
@@ -106,16 +150,21 @@ public:
 
 private slots:
     void slotTimerAlarm();
+    void slotTimerStopAnimationAlarm();
+    void slotTimerChangePositionAlarm();
 
 private:
     myGraphicsView* view;
     QGraphicsScene* scene;
     Ui::randome_game *ui;
 
+    QTimer* _timer_stop_animation;
+    QTimer* _timer_for_change_position;
     vector<vector<type_of_item>> vec_of_soderzimoe;
     vector<vector<pair<type_of_fluctuation, float>>> vec_of_fluct;
     vector<vector<Pixmap*>> vec_of_pixmaps;
-    vector<pair<float, float>>* vec_of_graphik;
+    vector<pair<float, float>>* vec_of_graphik_of_second_formanta;
+    vector<pair<float, float>>* vec_of_graphik_of_trird_formanta;
     //vector<pair<orientation_of_hero, vector<vector<signal_graphik>>>> strange_vector_of_graphiks;
     std::mt19937* gen;
 };

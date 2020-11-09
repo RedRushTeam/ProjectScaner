@@ -18,12 +18,13 @@ class graphic_window : public QDialog
     Q_OBJECT
 
 public:
-    explicit graphic_window(vector<vector<type_of_item>>* vec_of_soderzimoe, vector<vector<pair<type_of_fluctuation, float>>>* vec_of_fluct, vector<pair<float, float>>* vec_of_graphik, QWidget *parent = nullptr);
+    explicit graphic_window(vector<vector<type_of_item>>* vec_of_soderzimoe, vector<vector<pair<type_of_fluctuation, float>>>* vec_of_fluct, vector<pair<float, float>>* vec_of_graphik_of_second_formanta, vector<pair<float, float>>* vec_of_graphik_of_third_formanta, QWidget *parent = nullptr);
     ~graphic_window();
 
     vector<vector<type_of_item>>* vec_of_soderzimoe;
     vector<vector<pair<type_of_fluctuation, float>>>* vec_of_fluct;
-    vector<pair<float, float>>* vec_of_graphik;
+    vector<pair<float, float>>* vec_of_graphik_of_second_formanta;
+    vector<pair<float, float>>* vec_of_graphik_of_third_formanta;
     void keyPressEvent(QKeyEvent *event);
 
 private slots:
@@ -38,12 +39,12 @@ private slots:
 
 private:
     QBarSeries *series_2th_formanta;
+    QBarSeries *series_3th_formanta;
     pair<int, int>  _now_range_2th_command = make_pair(-1, -1);
     pair<float, float>  _now_range_2th_command_y = make_pair(-1, -1);
     QBarCategoryAxis *axisX = nullptr;
     QValueAxis *axisY = nullptr;
     QChartView *chartView_2th_formanta = nullptr;
-    QChartView *chartView_3th_formanta = nullptr;
     Ui::graphic_window *ui;
 };
 

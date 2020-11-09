@@ -3,8 +3,8 @@
 
     //TODO переписать генерацию графиков(по частям), если в графике много переменных, он лагает
 
-graphic_window::graphic_window(vector<vector<type_of_item>>* vec_of_soderzimoe, vector<vector<pair<type_of_fluctuation, float>>>* vec_of_fluct, vector<pair<float, float>>* vec_of_graphik, QWidget *parent) :
-    QDialog(parent), vec_of_soderzimoe(vec_of_soderzimoe), vec_of_fluct(vec_of_fluct), vec_of_graphik(vec_of_graphik),
+graphic_window::graphic_window(vector<vector<type_of_item>>* vec_of_soderzimoe, vector<vector<pair<type_of_fluctuation, float>>>* vec_of_fluct, vector<pair<float, float>>* vec_of_graphik_of_second_formanta, vector<pair<float, float>>* vec_of_graphik_of_third_formanta, QWidget *parent) :
+    QDialog(parent), vec_of_soderzimoe(vec_of_soderzimoe), vec_of_fluct(vec_of_fluct), vec_of_graphik_of_second_formanta(vec_of_graphik_of_second_formanta), vec_of_graphik_of_third_formanta(vec_of_graphik_of_third_formanta),
     ui(new Ui::graphic_window)
 {
     ui->setupUi(this);
@@ -70,11 +70,11 @@ graphic_window::graphic_window(vector<vector<type_of_item>>* vec_of_soderzimoe, 
     chartView_2th_formanta = new QChartView();
     chartView_2th_formanta->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
-    chartView_3th_formanta = new QChartView();
-    chartView_3th_formanta->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    //chartView_3th_formanta = new QChartView();
+    //chartView_3th_formanta->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
-    chartView_2th_formanta->setRenderHint(QPainter::Antialiasing);
-    chartView_3th_formanta->setRenderHint(QPainter::Antialiasing);
+    //chartView_2th_formanta->setRenderHint(QPainter::Antialiasing);
+    //chartView_3th_formanta->setRenderHint(QPainter::Antialiasing);
 
     QChart *chart_2th_formanta = new QChart();
     chart_2th_formanta->setTitle("Вторая форманта");
@@ -82,20 +82,36 @@ graphic_window::graphic_window(vector<vector<type_of_item>>* vec_of_soderzimoe, 
     //chartView_2th_formanta->l
 
     this->series_2th_formanta = new QBarSeries(chart_2th_formanta);
+    //this->series_3th_formanta = new QBarSeries(chart_2th_formanta);
 
     QBarSet *set = new QBarSet("450-500 МГц");
     //добавление первых 50 отсчетов на график
+    QBarSet *set_3th_formanta = new QBarSet("450-500 МГц");
 
     QStringList categories;
 
+    //выборка второй форманты
     for(int i = 0; i < 51; ++i){
-        categories << QString::number(this->vec_of_graphik->operator[](i).first);
-        *set << this->vec_of_graphik->operator[](i).second;
+        categories << QString::number(this->vec_of_graphik_of_second_formanta->operator[](i).first);
+        *set << this->vec_of_graphik_of_second_formanta->operator[](i).second;
     }
 
+    //добавление второй форманты на график
     series_2th_formanta->append(set);
-    chart_2th_formanta->addSeries(series_2th_formanta);
 
+
+    //выборка третьей форманты
+    for(int i = 0; i < 51; ++i)
+        *set_3th_formanta << this->vec_of_graphik_of_third_formanta->operator[](i).second;
+
+    series_2th_formanta->append(set_3th_formanta);
+        chart_2th_formanta->addSeries(series_2th_formanta);
+
+    //добавление третьей форманты на график
+    //series_3th_formanta->append(set_3th_formanta);
+    //chart_2th_formanta->addSeries(series_3th_formanta);
+
+    //настройка осей
     QFont font_for_axis("Times new roman", 8, QFont::Bold);
     axisX = new QBarCategoryAxis();
     axisX->setTitleFont(font_for_axis);
@@ -166,15 +182,18 @@ void graphic_window::_50mgz_plused()    //done!
         axisX->clear();
         series_2th_formanta->clear();
 
+        QBarSet *set_3th_formanta = new QBarSet(QString::number(this->_now_range_2th_command.first) + "-" + QString::number(this->_now_range_2th_command.second) + " МГц");
         QBarSet *set = new QBarSet(QString::number(this->_now_range_2th_command.first) + "-" + QString::number(this->_now_range_2th_command.second) + " МГц");
         QStringList categories;
 
         for(int i = this->_now_range_2th_command.first; i <= this->_now_range_2th_command.second; ++i){
-            categories << QString::number(this->vec_of_graphik->operator[](i - 450).first);
-            *set << this->vec_of_graphik->operator[](i - 450).second;
+            categories << QString::number(this->vec_of_graphik_of_second_formanta->operator[](i - 450).first);
+            *set_3th_formanta << this->vec_of_graphik_of_third_formanta->operator[](i - 450).second;
+            *set << this->vec_of_graphik_of_second_formanta->operator[](i - 450).second;
         }
 
         series_2th_formanta->append(set);
+        series_2th_formanta->append(set_3th_formanta);
         axisX->append(categories);
         axisX->setRange(QString::number(this->_now_range_2th_command.first), (QString::number(this->_now_range_2th_command.second)));
 
@@ -191,15 +210,18 @@ void graphic_window::_50mgz_minused()   //done!
         axisX->clear();
         series_2th_formanta->clear();
 
+        QBarSet *set_3th_formanta = new QBarSet(QString::number(this->_now_range_2th_command.first) + "-" + QString::number(this->_now_range_2th_command.second) + " МГц");
         QBarSet *set = new QBarSet(QString::number(this->_now_range_2th_command.first) + "-" + QString::number(this->_now_range_2th_command.second) + " МГц");
         QStringList categories;
 
         for(int i = this->_now_range_2th_command.first; i <= this->_now_range_2th_command.second; ++i){
-            categories << QString::number(this->vec_of_graphik->operator[](i - 450).first);
-            *set << this->vec_of_graphik->operator[](i - 450).second;
+            categories << QString::number(this->vec_of_graphik_of_second_formanta->operator[](i - 450).first);
+            *set_3th_formanta << this->vec_of_graphik_of_third_formanta->operator[](i - 450).second;
+            *set << this->vec_of_graphik_of_second_formanta->operator[](i - 450).second;
         }
 
         series_2th_formanta->append(set);
+        series_2th_formanta->append(set_3th_formanta);
         axisX->append(categories);
         axisX->setRange(QString::number(this->_now_range_2th_command.first), (QString::number(this->_now_range_2th_command.second)));
 
@@ -219,15 +241,18 @@ void graphic_window::_100mgz_plused()
         axisX->clear();
         series_2th_formanta->clear();
 
+        QBarSet *set_3th_formanta = new QBarSet(QString::number(this->_now_range_2th_command.first) + "-" + QString::number(this->_now_range_2th_command.second) + " МГц");
         QBarSet *set = new QBarSet(QString::number(this->_now_range_2th_command.first) + "-" + QString::number(this->_now_range_2th_command.second) + " МГц");
         QStringList categories;
 
         for(int i = this->_now_range_2th_command.first; i <= this->_now_range_2th_command.second; ++i){
-            categories << QString::number(this->vec_of_graphik->operator[](i - 450).first);
-            *set << this->vec_of_graphik->operator[](i - 450).second;
+            categories << QString::number(this->vec_of_graphik_of_second_formanta->operator[](i - 450).first);
+            *set_3th_formanta << this->vec_of_graphik_of_third_formanta->operator[](i - 450).second;
+            *set << this->vec_of_graphik_of_second_formanta->operator[](i - 450).second;
         }
 
         series_2th_formanta->append(set);
+        series_2th_formanta->append(set_3th_formanta);
         axisX->append(categories);
         axisX->setRange(QString::number(this->_now_range_2th_command.first), (QString::number(this->_now_range_2th_command.second)));
 
@@ -247,15 +272,18 @@ void graphic_window::_100mgz_minused()
         axisX->clear();
         series_2th_formanta->clear();
 
+        QBarSet *set_3th_formanta = new QBarSet(QString::number(this->_now_range_2th_command.first) + "-" + QString::number(this->_now_range_2th_command.second) + " МГц");
         QBarSet *set = new QBarSet(QString::number(this->_now_range_2th_command.first) + "-" + QString::number(this->_now_range_2th_command.second) + " МГц");
         QStringList categories;
 
         for(int i = this->_now_range_2th_command.first; i <= this->_now_range_2th_command.second; ++i){
-            categories << QString::number(this->vec_of_graphik->operator[](i - 450).first);
-            *set << this->vec_of_graphik->operator[](i - 450).second;
+            categories << QString::number(this->vec_of_graphik_of_second_formanta->operator[](i - 450).first);
+            *set << this->vec_of_graphik_of_second_formanta->operator[](i - 450).second;
+            *set_3th_formanta << this->vec_of_graphik_of_third_formanta->operator[](i - 450).second;
         }
 
         series_2th_formanta->append(set);
+        series_2th_formanta->append(set_3th_formanta);
         axisX->append(categories);
         axisX->setRange(QString::number(this->_now_range_2th_command.first), (QString::number(this->_now_range_2th_command.second)));
 
@@ -265,23 +293,27 @@ void graphic_window::_100mgz_minused()
 
 void graphic_window::zoom_0_9_x_clicked()
 {
-    if(this->_now_range_2th_command.second - this->_now_range_2th_command.first >= 200|| (this->_now_range_2th_command.second * 1.02 > 5550))
+    int now_size_of_range = this->_now_range_2th_command.second - this->_now_range_2th_command.first;
+    if(this->_now_range_2th_command.second - this->_now_range_2th_command.first >= 200 || ((this->_now_range_2th_command.first + now_size_of_range * 1.02) > 5550))
         return;
 
-    this->_now_range_2th_command.second = this->_now_range_2th_command.second * 1.02;
+    this->_now_range_2th_command.second = this->_now_range_2th_command.first + now_size_of_range * 1.02;
 
     axisX->clear();
     series_2th_formanta->clear();
 
+    QBarSet *set_3th_formanta = new QBarSet(QString::number(this->_now_range_2th_command.first) + "-" + QString::number(this->_now_range_2th_command.second) + " МГц");
     QBarSet *set = new QBarSet(QString::number(this->_now_range_2th_command.first) + "-" + QString::number(this->_now_range_2th_command.second) + " МГц");
     QStringList categories;
 
     for(int i = this->_now_range_2th_command.first; i <= this->_now_range_2th_command.second; ++i){
-        categories << QString::number(this->vec_of_graphik->operator[](i - 450).first);
-        *set << this->vec_of_graphik->operator[](i - 450).second;
+        categories << QString::number(this->vec_of_graphik_of_second_formanta->operator[](i - 450).first);
+        *set << this->vec_of_graphik_of_second_formanta->operator[](i - 450).second;
+        *set_3th_formanta << this->vec_of_graphik_of_third_formanta->operator[](i - 450).second;
     }
 
     series_2th_formanta->append(set);
+    series_2th_formanta->append(set_3th_formanta);
     axisX->append(categories);
     axisX->setRange(QString::number(this->_now_range_2th_command.first), (QString::number(this->_now_range_2th_command.second)));
 
@@ -293,20 +325,24 @@ void graphic_window::zoom_1_1_x_clicked()
     if(this->_now_range_2th_command.second - this->_now_range_2th_command.first <= 50)
         return;
 
-    this->_now_range_2th_command.second = this->_now_range_2th_command.second * 0.98;
+    int now_size_of_range = this->_now_range_2th_command.second - this->_now_range_2th_command.first;
+    this->_now_range_2th_command.second = this->_now_range_2th_command.first + now_size_of_range * 0.98;
 
     axisX->clear();
     series_2th_formanta->clear();
 
+    QBarSet *set_3th_formanta = new QBarSet(QString::number(this->_now_range_2th_command.first) + "-" + QString::number(this->_now_range_2th_command.second) + " МГц");
     QBarSet *set = new QBarSet(QString::number(this->_now_range_2th_command.first) + "-" + QString::number(this->_now_range_2th_command.second) + " МГц");
     QStringList categories;
 
     for(int i = this->_now_range_2th_command.first; i <= this->_now_range_2th_command.second; ++i){
-        categories << QString::number(this->vec_of_graphik->operator[](i - 450).first);
-        *set << this->vec_of_graphik->operator[](i - 450).second;
+        categories << QString::number(this->vec_of_graphik_of_second_formanta->operator[](i - 450).first);
+        *set << this->vec_of_graphik_of_second_formanta->operator[](i - 450).second;
+        *set_3th_formanta << this->vec_of_graphik_of_third_formanta->operator[](i - 450).second;
     }
 
     series_2th_formanta->append(set);
+    series_2th_formanta->append(set_3th_formanta);
     axisX->append(categories);
     axisX->setRange(QString::number(this->_now_range_2th_command.first), (QString::number(this->_now_range_2th_command.second)));
 
