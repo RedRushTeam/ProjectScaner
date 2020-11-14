@@ -25,6 +25,8 @@ change_size::change_size(QWidget *parent) :
     high->setFont(font_for_label);
     high->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     high->setValidator(new QIntValidator(10, 80, this));
+    high->setStyleSheet("QLineEdit {    border: 2px solid gray;    border-radius: 10px;    padding: 0 8px;    background:  rgba(255, 255, 0, 120);    selection-background-color: rgba(255, 255, 0, 120);    }");
+    high->setFont(font_for_label);
     high->setText("10");
     hbox->addWidget(high);
 
@@ -32,6 +34,8 @@ change_size::change_size(QWidget *parent) :
     weight->setFont(font_for_label);
     weight->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     weight->setValidator(new QIntValidator(10, 80, this));
+    weight->setStyleSheet("QLineEdit {    border: 2px solid gray;    border-radius: 10px;    padding: 0 8px;    background:  rgba(255, 255, 0, 120);    selection-background-color: rgba(255, 255, 0, 120);    }");
+    weight->setFont(font_for_label);
     weight->setText("10");
     hbox->addWidget(weight);
 
@@ -70,12 +74,22 @@ void change_size::OK_clicked()
 
     //w.showMaximized();
     if(this->is_this_will_be_random_game){
-        auto randome_game_ = new randome_game(this, this->weight->text().toInt(), this->high->text().toInt());
+        auto* randome_game_ = new randome_game(this, this->weight->text().toInt(), this->high->text().toInt());
         randome_game_->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);
         randome_game_->setWindowTitle("Случайная игра");
         randome_game_->showMaximized();
         randome_game_->setModal(true);
         this->close();
         randome_game_->exec();
+    }
+
+    if(this->is_this_will_be_prep_game){
+        auto* prepod_game_ = new prepod_game(this, this->weight->text().toInt(), this->high->text().toInt());
+        prepod_game_->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);
+        prepod_game_->setWindowTitle("Случайная игра");
+        prepod_game_->showMaximized();
+        prepod_game_->setModal(true);
+        this->close();
+        prepod_game_->exec();
     }
 }

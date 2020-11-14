@@ -50,6 +50,7 @@
 #include <QTimer>
 #include <QTime>
 #include <QMovie>
+#include <QRegExp>
 
 //my includes
 //#include "help.h"

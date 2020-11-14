@@ -130,8 +130,8 @@ public:
     void add_concret_fluct_second_formanta(int start, int length, float power_of_fluct);
     void add_concret_fluct_trird_formanta(int start, int length, float power_of_fluct);
     bool is_coordinate_is_normal(pair<int, int> _coordinate) const;
-    void keyPressEvent(QKeyEvent *event);
-    void mousePressEvent(QMouseEvent *mEvent);
+    virtual void keyPressEvent(QKeyEvent *event);
+    virtual void mousePressEvent(QMouseEvent *mEvent);
     void keyReleaseEvent(QKeyEvent *event);
     void move_hero();
     void start_animation_and_move_hero();
@@ -145,15 +145,14 @@ public:
     pair<int, int> _coordinate_of_zakladka;
     QTimer* _timer;
     bool is_move_possible = true;
-    list<int> _list_of_pushed_buttons;
 
-
-private slots:
+protected slots:
     void slotTimerAlarm();
     void slotTimerStopAnimationAlarm();
     void slotTimerChangePositionAlarm();
 
-private:
+protected:
+    QVBoxLayout* hbox;
     myGraphicsView* view;
     QGraphicsScene* scene;
     Ui::randome_game *ui;
@@ -165,7 +164,6 @@ private:
     vector<vector<Pixmap*>> vec_of_pixmaps;
     vector<pair<float, float>>* vec_of_graphik_of_second_formanta;
     vector<pair<float, float>>* vec_of_graphik_of_trird_formanta;
-    //vector<pair<orientation_of_hero, vector<vector<signal_graphik>>>> strange_vector_of_graphiks;
     std::mt19937* gen;
 };
 #endif // RANDOM_GAME_H

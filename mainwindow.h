@@ -5,6 +5,7 @@
 #include "change_size.h"
 #include "about.h"
 #include "help.h"
+#include "password_dialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -21,6 +22,7 @@ public:
 private slots:
     void open_help_window() const;
     void open_about_window() const;
+    void open_password_window();
     void open_game_window();
     void open_prep_window();
     void open_constr_window();
@@ -31,9 +33,11 @@ private:
     QGraphicsScene* scene;
     ////
 
+    bool is_password_true = false;
     QVBoxLayout *vbox;
     set<Pixmap *> set_of_main_menu_elements;
     QLabel *title;
+    QPushButton* _pass;
     QPushButton *start_with_rand;
     QPushButton *start_with_settings;
     QPushButton *start_with_prep;

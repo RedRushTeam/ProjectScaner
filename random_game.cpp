@@ -25,7 +25,7 @@ randome_game::randome_game(QWidget *parent, int weight, int height) :
     this->_timer_for_change_position->stop();
     connect(_timer_for_change_position, SIGNAL(timeout()), this, SLOT(slotTimerChangePositionAlarm()));
 
-    QVBoxLayout* hbox = new QVBoxLayout(this);
+    this->hbox = new QVBoxLayout(this);
 
     this->scene = new QGraphicsScene();
     this->view = new myGraphicsView(scene);
@@ -89,8 +89,8 @@ void randome_game::generate_map()
     //count of items generations
     int total_armchairs = this->generate_random_int_number(1, 2) * mnozitel;
     int total_ones_tables = this->generate_random_int_number(1, 2) * mnozitel;
-    int one_shair_tables = this->generate_random_int_number(1, 2) * mnozitel;
-    int two_chairs_tables = this->generate_random_int_number(0, 1) * mnozitel;
+    int three_shair_tables = this->generate_random_int_number(0, 1) * mnozitel;
+    int two_chairs_tables = this->generate_random_int_number(1, 2) * mnozitel;
     int sofa_count = this->generate_random_int_number(0, 1) * mnozitel;
 
     //allocated memory for vec
@@ -121,11 +121,17 @@ void randome_game::generate_map()
     floor->load(":/new/random_game_textures/228.1.jpg");
     // TODO ADD TEXTURES
     QPixmap* armchair = new QPixmap();
-    armchair->load(":/new/random_game_textures/new/random_game_textures/chair 128x128.jpg");
+    armchair->load(":/new/random_game_textures/new/random_game_textures/wood_chair_128x128.png");
     QPixmap* tableH = new QPixmap();
     tableH->load(":/new/random_game_textures/new/random_game_textures/tableH 384x128.jpg");
+    QPixmap* tablePro = new QPixmap();
+    tablePro->load(":/new/random_game_textures/new/random_game_textures/table_pro_128x256.png");
     QPixmap* divanH = new QPixmap();
     divanH->load(":/new/random_game_textures/new/random_game_textures/divanH 256x128.jpg");
+    QPixmap* divanLarge = new QPixmap();
+    divanLarge->load(":/new/random_game_textures/new/random_game_textures/divan_128x384.png");
+    QPixmap* whiteChair = new QPixmap();
+    whiteChair->load(":/new/random_game_textures/new/random_game_textures/white_chair_128x128.png");
 
     // TODO TROUBLES WITH PRYAM. KOMNATAMI
     //wall add
@@ -226,8 +232,99 @@ void randome_game::generate_map()
         scene->addItem(item_divanH);
     }
 
-    int blyadovka1 = 1;
+    //two_chairs_tables adding
+    for(int i = 0; i < two_chairs_tables; ++i){
+        Pixmap *pro_table = new Pixmap(*tablePro);
+        Pixmap *white_chair = new Pixmap(*whiteChair);
+        Pixmap *armchair_ = new Pixmap(*armchair);
+        lable_two_chairs_tables:
+        auto sh = this->generate_random_int_number(1, this->weight_of_map - 3);
+        auto v = this->generate_random_int_number(1, this->height_of_map - 2);
+        if((this->vec_of_soderzimoe[v + 1][sh + 1] == neprohod_object_) || (this->vec_of_soderzimoe[v + 1][sh + 2] == neprohod_object_))
+            goto lable_two_chairs_tables;
+        if((this->vec_of_soderzimoe[v + 2][sh + 1] == neprohod_object_) || (this->vec_of_soderzimoe[v + 2][sh + 2] == neprohod_object_))        ////    * * *
+            goto lable_two_chairs_tables;                                                                                                       ////    * * *
+        if((this->vec_of_soderzimoe[v + 3][sh + 1] == neprohod_object_) || (this->vec_of_soderzimoe[v + 3][sh + 2] == neprohod_object_))        ////    * * *
+            goto lable_two_chairs_tables;
 
+        this->vec_of_soderzimoe[v + 1][sh + 1] = neprohod_object_;  //кресло сверху
+        this->vec_of_soderzimoe[v + 2][sh + 1] = neprohod_object_;  //стол
+        this->vec_of_soderzimoe[v + 2][sh + 2] = neprohod_object_;  //стол
+        this->vec_of_soderzimoe[v + 3][sh + 1] = neprohod_object_;  //кресло снизу
+
+        this->vec_of_pixmaps[v + 1][sh + 1] = white_chair;
+        this->vec_of_pixmaps[v + 2][sh + 1] = pro_table;
+        this->vec_of_pixmaps[v + 2][sh + 2] = pro_table;
+        this->vec_of_pixmaps[v + 3][sh + 1] = armchair_;
+
+        //ставим верхний стул
+        white_chair->setOffset(-whiteChair->width()/2, -whiteChair->height()/2);
+        white_chair->setPos(128. * sh + 192., 192. + 128 * v);
+        scene->addItem(white_chair);
+
+        //ставим нижний стул
+        armchair_->setOffset(-armchair->width()/2, -armchair->height()/2);
+        armchair_->setPos(128. * sh + 192., 192. + 128 * v + 256.);   //
+        armchair_->setRotation(180.);
+        scene->addItem(armchair_);
+
+        //ставим стол
+        pro_table->setOffset(-tablePro->width()/2, -tablePro->height()/2);
+        pro_table->setPos(128. * sh + 256., 192. + 128 * v + 128.);
+        scene->addItem(pro_table);
+    }
+
+    //three_shair_tables adding
+    for(int i = 0; i < three_shair_tables; ++i){
+        Pixmap *pro_table = new Pixmap(*tablePro);
+        Pixmap *white_chair = new Pixmap(*whiteChair);
+        Pixmap *armchair_ = new Pixmap(*armchair);
+        Pixmap *armchair_two = new Pixmap(*armchair);
+        lable_three_shair_tables:
+        auto sh = this->generate_random_int_number(1, this->weight_of_map - 3);
+        auto v = this->generate_random_int_number(1, this->height_of_map - 2);
+
+        if((this->vec_of_soderzimoe[v + 1][sh + 1] == neprohod_object_) || (this->vec_of_soderzimoe[v + 1][sh + 2] == neprohod_object_))
+            goto lable_three_shair_tables;
+        if((this->vec_of_soderzimoe[v + 2][sh + 1] == neprohod_object_) || (this->vec_of_soderzimoe[v + 2][sh + 2] == neprohod_object_))        ////    * * *
+            goto lable_three_shair_tables;                                                                                                      ////    * * *
+        if((this->vec_of_soderzimoe[v + 3][sh + 1] == neprohod_object_) || (this->vec_of_soderzimoe[v + 3][sh + 2] == neprohod_object_))        ////    * * *
+            goto lable_three_shair_tables;
+
+        this->vec_of_soderzimoe[v + 1][sh + 1] = neprohod_object_;  //кресло сверху
+        this->vec_of_soderzimoe[v + 2][sh + 1] = neprohod_object_;  //стол
+        this->vec_of_soderzimoe[v + 2][sh + 2] = neprohod_object_;  //стол
+        this->vec_of_soderzimoe[v + 3][sh + 1] = neprohod_object_;  //кресло снизу
+        this->vec_of_soderzimoe[v + 3][sh + 2] = neprohod_object_;  //кресло 2 снизу
+
+        this->vec_of_pixmaps[v + 1][sh + 1] = white_chair;
+        this->vec_of_pixmaps[v + 2][sh + 1] = pro_table;
+        this->vec_of_pixmaps[v + 2][sh + 2] = pro_table;
+        this->vec_of_pixmaps[v + 3][sh + 1] = armchair_;
+        this->vec_of_pixmaps[v + 3][sh + 2] = armchair_two;
+
+        //ставим верхний стул
+        white_chair->setOffset(-whiteChair->width()/2, -whiteChair->height()/2);
+        white_chair->setPos(128. * sh + 192., 192. + 128 * v);
+        scene->addItem(white_chair);
+
+        //ставим нижний стул
+        armchair_->setOffset(-armchair->width()/2, -armchair->height()/2);
+        armchair_->setPos(128. * sh + 192., 192. + 128 * v + 256.);
+        armchair_->setRotation(180.);
+        scene->addItem(armchair_);
+
+        //ставим второй нижний стул
+        armchair_two->setOffset(-armchair->width()/2, -armchair->height()/2);
+        armchair_two->setPos(128. * sh + 192. + 128., 192. + 128 * v + 256.);
+        armchair_two->setRotation(180.);
+        scene->addItem(armchair_two);
+
+        //ставим стол
+        pro_table->setOffset(-tablePro->width()/2, -tablePro->height()/2);
+        pro_table->setPos(128. * sh + 256., 192. + 128 * v + 128.);
+        scene->addItem(pro_table);
+    }
 }
 
 void randome_game::set_scene_size()
@@ -294,7 +391,7 @@ void randome_game::generate_flukt()         //mabe rewrite this     //TODO CHECK
     }
 }
 
-void randome_game::generate_graphik_perems()    //TODO test this code
+void randome_game::generate_graphik_perems()
 {
     //adding shum
     for(int i = 0; i < this->vec_of_graphik_of_second_formanta->size(); ++i)
@@ -504,13 +601,10 @@ bool randome_game::is_coordinate_is_normal(pair<int, int> _coordinate) const
     return true;
 }
 
-void randome_game::keyPressEvent(QKeyEvent *event)              //TODO ADD diagonal move
+void randome_game::keyPressEvent(QKeyEvent *event)
 {
     if(!this->is_move_possible)
         return;
-
-    //_list_of_pushed_buttons.push_back(event->key());        //это для двойных клавиш, но нужны ли они?
-
 
     if(event->key() == Qt::Key_W || event->key() == 0x0426){
          if(this->vec_of_soderzimoe[this->_hero->coordinate.first - 1][this->_hero->coordinate.second] == empty_){
@@ -652,8 +746,8 @@ void randome_game::mousePressEvent(QMouseEvent *mEvent)
 
     auto x = mEvent->windowPos().x();
     auto y = mEvent->windowPos().y();
-    this->_vibrannaya_kletka = make_pair(this->view->mapToScene(mEvent->windowPos().x(), mEvent->windowPos().y()).x(), this->view->mapToScene(mEvent->windowPos().x(), mEvent->windowPos().y()).y());   //i dont now how it working, but it working!
-    this->_vibrannaya_kletka = make_pair(floor(this->_vibrannaya_kletka.second / 128), floor(this->_vibrannaya_kletka.first / 128));
+    auto temp = make_pair(this->view->mapToScene(mEvent->windowPos().x(), mEvent->windowPos().y()).x(), this->view->mapToScene(mEvent->windowPos().x(), mEvent->windowPos().y()).y());   //i dont now how it working, but it working!
+    this->_vibrannaya_kletka = make_pair(floor(temp.second / 128), floor(temp.first / 128));
 
     if(this->vec_of_soderzimoe[this->_vibrannaya_kletka.first][this->_vibrannaya_kletka.second] == empty_ || (this->vec_of_soderzimoe[this->_vibrannaya_kletka.first][this->_vibrannaya_kletka.second] == GG_)){
         this->_vibrannaya_kletka = make_pair(-1, -1);
@@ -672,11 +766,11 @@ void randome_game::mousePressEvent(QMouseEvent *mEvent)
 
 void randome_game::keyReleaseEvent(QKeyEvent *event)
 {
-    for(auto i = this->_list_of_pushed_buttons.begin(); i != this->_list_of_pushed_buttons.end(); ++i)
+/*    for(auto i = this->_list_of_pushed_buttons.begin(); i != this->_list_of_pushed_buttons.end(); ++i)
         if(event->key() == *i){
             this->_list_of_pushed_buttons.erase(i);
             return;
-        }
+        }*/
 }
 
 void randome_game::move_hero()  //должен вызываться уже после установки нового направления героя!
@@ -744,10 +838,6 @@ void randome_game::slotTimerStopAnimationAlarm()
     float new_pos_y = round((this->_hero->pos().y() - 64.) / 128.) * 128. + 64.;
     this->_hero->setPos(new_pos_x, new_pos_y);
     this->_hero->update();
-
-    //this
-
-    //qDebug() << this->_hero->pos().x() << " " << this->_hero->pos().y();
     this->_timer_stop_animation->stop();
 }
 

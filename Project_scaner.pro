@@ -16,6 +16,9 @@ SOURCES += \
     help.cpp \
     main.cpp \
     mainwindow.cpp \
+    nastr_game.cpp \
+    password_dialog.cpp \
+    prepod_game.cpp \
     random_game.cpp
 
 HEADERS += \
@@ -25,6 +28,9 @@ HEADERS += \
     help.h \
     list_of_types.h \
     mainwindow.h \
+    nastr_game.h \
+    password_dialog.h \
+    prepod_game.h \
     random_game.h
 
 FORMS += \
@@ -33,6 +39,8 @@ FORMS += \
     graphic_window.ui \
     help.ui \
     mainwindow.ui \
+    nastr_game.ui \
+    password_dialog.ui \
     random_game.ui
 
 # Default rules for deployment.
