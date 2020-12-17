@@ -19,8 +19,10 @@ public:
 
 private slots:
     void OK_clicked();
+    void textChanged(const QString &text);
 
 private:
+    QString now_line;
     QLineEdit *pass_line;
     string password = "yava123";
 

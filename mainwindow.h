@@ -25,6 +25,7 @@ private slots:
     void open_password_window();
     void open_game_window();
     void open_prep_window();
+    void open_con_window();
     void open_constr_window();
 private:
 
@@ -38,6 +39,7 @@ private:
     set<Pixmap *> set_of_main_menu_elements;
     QLabel *title;
     QPushButton* _pass;
+    QPushButton *start_with_con;
     QPushButton *start_with_rand;
     QPushButton *start_with_settings;
     QPushButton *start_with_prep;

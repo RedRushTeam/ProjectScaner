@@ -2,8 +2,7 @@
 #define CHANGE_SIZE_H
 #pragma once
 
-#include "random_game.h"
-#include "prepod_game.h"
+#include "con_game.h"
 
 namespace Ui {
 class change_size;

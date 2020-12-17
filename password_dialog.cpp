@@ -41,6 +41,7 @@ password_dialog::password_dialog(QWidget *parent) :
     hbox->addWidget(OK);
 
     connect(OK, &QPushButton::clicked, this, &password_dialog::OK_clicked);
+    connect(pass_line, &QLineEdit::textChanged, this, &password_dialog::textChanged);
 }
 
 password_dialog::~password_dialog()
@@ -50,10 +51,35 @@ password_dialog::~password_dialog()
 
 void password_dialog::OK_clicked()  //todo добавить regex
 {
-    if(this->pass_line->text().toStdString() == this->password){
+    QString shit;
+    for(auto obj : this->now_line)
+        if(obj != '*')
+            shit.push_back(obj);
+
+    if(shit.toStdString() == this->password){
         this->is_password_true = true;
         this->close();
     }
     else
         QMessageBox::warning(this, "Внимание", "Неверный пароль, попробуйте еще раз.");
+}
+
+void password_dialog::textChanged(const QString &text)
+{
+    QString line = this->pass_line->text();
+    this->now_line.push_back(line[line.size() - 1]);
+    int index = line.size() - 1;
+
+    QTimer *timer = new QTimer(this);
+    timer->setSingleShot(true);
+    timer->setInterval(50);
+
+    connect(timer, &QTimer::timeout, [this,timer,index]() {
+        QString line = this->pass_line->text();
+        line.replace(index, 1, '*');
+        this->pass_line->setText(line);
+        timer->deleteLater();
+    });
+
+    timer->start();
 }

@@ -12,6 +12,7 @@ CONFIG += c++17
 SOURCES += \
     about.cpp \
     change_size.cpp \
+    con_game.cpp \
     graphic_window.cpp \
     help.cpp \
     main.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
 HEADERS += \
     about.h \
     change_size.h \
+    con_game.h \
     graphic_window.h \
     help.h \
     list_of_types.h \
@@ -36,6 +38,7 @@ HEADERS += \
 FORMS += \
     about.ui \
     change_size.ui \
+    con_game.ui \
     graphic_window.ui \
     help.ui \
     mainwindow.ui \

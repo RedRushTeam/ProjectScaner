@@ -33,6 +33,14 @@ void prepod_game::ok_pushed()
         this->hbox->removeWidget(this->start_with_rand);
         this->start_with_rand->hide();
     }
+
+    this->_pix_chaged_cell->hide();
+    this->_pix_chaged_cell = nullptr;
+
+    for(int i = 0; i < this->vec_of_fluct.size(); ++i)
+        fill(this->vec_of_fluct[i].begin(), this->vec_of_fluct[i].end(), make_pair(no_fluct_, 0));
+
+    this->generate_flukt();
 }
 
 void prepod_game::mousePressEvent(QMouseEvent *event)
@@ -43,10 +51,11 @@ void prepod_game::mousePressEvent(QMouseEvent *event)
             this->_pix_chaged_cell = nullptr;
         }
 
-        auto x = event->windowPos().x();
-        auto y = event->windowPos().y();
         auto temp =  make_pair(this->view->mapToScene(event->windowPos().x(), event->windowPos().y()).x(), this->view->mapToScene(event->windowPos().x(), event->windowPos().y()).y());   //i dont now how it working, but it working!
         this->_coordinate_of_zakladka = make_pair(floor(temp.second / 128), floor(temp.first / 128));
+
+        if(temp.first - 1 < -1 || (temp.second - 1 < -1) || (temp.first - 1 > this->weight_of_map) || (temp.second - 1 > this->height_of_map))
+            return;
 
         if(this->vec_of_soderzimoe[this->_coordinate_of_zakladka.first][this->_coordinate_of_zakladka.second] == empty_ || (this->vec_of_soderzimoe[this->_coordinate_of_zakladka.first][this->_coordinate_of_zakladka.second] == GG_)){
             this->_coordinate_of_zakladka = make_pair(-1, -1);
@@ -70,8 +79,6 @@ void prepod_game::mousePressEvent(QMouseEvent *event)
             this->_pix_chaged_cell = nullptr;
         }
 
-        auto x = event->windowPos().x();
-        auto y = event->windowPos().y();
         auto temp = make_pair(this->view->mapToScene(event->windowPos().x(), event->windowPos().y()).x(), this->view->mapToScene(event->windowPos().x(), event->windowPos().y()).y());   //i dont now how it working, but it working!
         this->_vibrannaya_kletka = make_pair(floor(temp.second / 128), floor(temp.first / 128));
 

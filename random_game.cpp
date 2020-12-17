@@ -48,10 +48,10 @@ randome_game::randome_game(QWidget *parent, int weight, int height) :
     //this->vec_of_graphik_of_trird_formanta->resize(5550); //4islo otshetov na graphike
 
     this->generate_map();
-    this->generate_flukt();
-    //this->generate_graphik_perems();
     this->add_hero();
     this->add_zakladka();
+    this->generate_flukt();
+    //this->generate_graphik_perems();
 }
 
 randome_game::~randome_game()
@@ -363,7 +363,7 @@ void randome_game::generate_flukt()         //mabe rewrite this     //TODO CHECK
 {
     int total_size_of_map = this->weight_of_map * this->height_of_map;     //100 minimum, 6400 maximum
     int mnozitel = total_size_of_map / 100;
-
+    //enum type_of_fluctuation{no_fluct_, inactive_semiconductors_, active_semiconductors_, bluetooth_, _5g_, _4g_, _3g_, GPS_, radio_, GLONASS_};
     int total_fluct = this->generate_random_int_number(3, 5) * mnozitel;
 
     for(int i = 0; i < total_fluct; ++i){
@@ -385,10 +385,16 @@ void randome_game::generate_flukt()         //mabe rewrite this     //TODO CHECK
             if(this->vec_of_fluct[v][sh].first != no_fluct_ || (this->vec_of_soderzimoe[v][sh] == empty_))
                 goto label_flukt_s_nositelem;
             type_of_fluctuation _type_of_fluctuation = static_cast<type_of_fluctuation>(this->generate_random_int_number(1, 3));    //magic numbers
+            if(_type_of_fluctuation == active_semiconductors_)
+                goto label_flukt_s_nositelem;
             this->vec_of_fluct[v][sh].first = _type_of_fluctuation;
             this->vec_of_fluct[v][sh].second = this->generate_random_int_number(20, 50);
         }
     }
+    //добавление закладки в список флуктуаций
+    auto shit = this->_coordinate_of_zakladka;
+    this->vec_of_fluct[this->_coordinate_of_zakladka.first][this->_coordinate_of_zakladka.second].first = active_semiconductors_;
+    this->vec_of_fluct[this->_coordinate_of_zakladka.first][this->_coordinate_of_zakladka.second].second = this->generate_random_int_number(40, 60);
 }
 
 void randome_game::generate_graphik_perems()
@@ -409,25 +415,37 @@ void randome_game::generate_graphik_perems()
         for(int j = 1; j <= 5; ++j)
             for(int i = coordinate_of_hero.first - j; i <= coordinate_of_hero.first + j; ++i)
                 if(this->is_coordinate_is_normal(make_pair(i, coordinate_of_hero.second - j)))   //клетка допустима
-                    if(this->vec_of_fluct[i][coordinate_of_hero.second - j].first != no_fluct_)  //в клетке флуктуация
-                        vec_of_visible_fluct.push_back(make_pair(make_pair(i, coordinate_of_hero.second - j), this->vec_of_fluct[i][coordinate_of_hero.second - j])); //флуктуация сохранена
+                    if(this->vec_of_fluct[i][coordinate_of_hero.second - j].first != no_fluct_){  //в клетке флуктуация
+                        float now_pwr = this->vec_of_fluct[i][coordinate_of_hero.second - j].second;
+                        for(int k = j - 1; k > 0; --k)
+                            now_pwr = now_pwr * 0.95;
+                        vec_of_visible_fluct.push_back(make_pair(make_pair(i, coordinate_of_hero.second - j), make_pair(this->vec_of_fluct[i][coordinate_of_hero.second - j].first, now_pwr))); //флуктуация сохранена
+        }
         break;
     case right_:
         //все ряды вправо
         for(int j = 1; j <= 5; ++j)
             for(int i = coordinate_of_hero.first - j; i <= coordinate_of_hero.first + j; ++i)
                 if(this->is_coordinate_is_normal(make_pair(i, coordinate_of_hero.second + j)))   //клетка допустима
-                    if(this->vec_of_fluct[i][coordinate_of_hero.second + j].first != no_fluct_)  //в клетке флуктуация
-                        vec_of_visible_fluct.push_back(make_pair(make_pair(i, coordinate_of_hero.second + j), this->vec_of_fluct[i][coordinate_of_hero.second + j])); //флуктуация сохранена
+                    if(this->vec_of_fluct[i][coordinate_of_hero.second + j].first != no_fluct_){  //в клетке флуктуация
+                        float now_pwr = this->vec_of_fluct[i][coordinate_of_hero.second + j].second;
+                        for(int k = j - 1; k > 0; --k)
+                            now_pwr = now_pwr * 0.95;
+                        vec_of_visible_fluct.push_back(make_pair(make_pair(i, coordinate_of_hero.second + j), make_pair(this->vec_of_fluct[i][coordinate_of_hero.second + j].first, now_pwr))); //флуктуация сохранена
+        }
         break;
     case up_:
         //все ряды вверх
         for(int j = 1; j <= 5; ++j)
             for(int i = coordinate_of_hero.second - j; i <= coordinate_of_hero.second + j; ++i)
                 if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first - j, i)))   //клетка допустима
-                    if(this->vec_of_fluct[coordinate_of_hero.first - j][i].first != no_fluct_)  //в клетке флуктуация
-                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first - j, i), this->vec_of_fluct[coordinate_of_hero.first - j][i])); //флуктуация сохранена
-        /*
+                    if(this->vec_of_fluct[coordinate_of_hero.first - j][i].first != no_fluct_){  //в клетке флуктуация
+                        float now_pwr = this->vec_of_fluct[coordinate_of_hero.first - j][i].second;
+                        for(int k = j - 1; k > 0; --k)
+                            now_pwr = now_pwr * 0.95;
+                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first - j, i), make_pair(this->vec_of_fluct[coordinate_of_hero.first - j][i].first, now_pwr))); //флуктуация сохранена
+        }
+                        /*
         //это для up
         //на одной высоте с героем
         if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first, coordinate_of_hero.second - 1)))   //клетка допустима
@@ -458,8 +476,12 @@ void randome_game::generate_graphik_perems()
         for(int j = 1; j <= 5; ++j)
             for(int i = coordinate_of_hero.second - j; i <= coordinate_of_hero.second + j; ++i)
                 if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + j, i)))   //клетка допустима
-                    if(this->vec_of_fluct[coordinate_of_hero.first + j][i].first != no_fluct_)  //в клетке флуктуация
-                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + j, i), this->vec_of_fluct[coordinate_of_hero.first + j][i])); //флуктуация сохранена
+                    if(this->vec_of_fluct[coordinate_of_hero.first + j][i].first != no_fluct_){  //в клетке флуктуация
+                        float now_pwr = this->vec_of_fluct[coordinate_of_hero.first + j][i].second;
+                        for(int k = j - 1; k > 0; --k)
+                            now_pwr = now_pwr * 0.95;
+                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + j, i), make_pair(this->vec_of_fluct[coordinate_of_hero.first + j][i].first, now_pwr))); //флуктуация сохранена
+        }
         break;
     }
 
@@ -512,8 +534,9 @@ void randome_game::generate_graphik_perems()
         break;
 
         case active_semiconductors_:
-            //4800-4990
-            this->add_concret_fluct_second_formanta(4800, 190, power_of_fluct);
+            //1000-1025
+            this->add_concret_fluct_second_formanta(1000, 25, power_of_fluct);
+            this->add_concret_fluct_trird_formanta(1000, 25, power_of_fluct * 0.5);
         break;
 
         case bluetooth_:
@@ -524,25 +547,31 @@ void randome_game::generate_graphik_perems()
         case _5g_:  //TODO НАПИСАТЬ АНАЛОГИЧНЫЙ КОД ДЛЯ ДРУГИХ ФЛУКТУАЦИЙ
             //4800-4990
             this->add_concret_fluct_second_formanta(4800, 190, power_of_fluct);
+            this->add_concret_fluct_trird_formanta(4800, 190, power_of_fluct);
         break;
 
         case _4g_:
             //452-467
             this->add_concret_fluct_second_formanta(452, 15, power_of_fluct);
+            this->add_concret_fluct_trird_formanta(452, 15, power_of_fluct);
 
             //720-791
             this->add_concret_fluct_second_formanta(720, 71, power_of_fluct);
+            this->add_concret_fluct_trird_formanta(720, 71, power_of_fluct);
 
             //2500-2570
             this->add_concret_fluct_second_formanta(2500, 70, power_of_fluct);
+            this->add_concret_fluct_trird_formanta(2500, 70, power_of_fluct);
         break;
 
         case _3g_:
             //1920-1980
             this->add_concret_fluct_second_formanta(1920, 60, power_of_fluct);
+            this->add_concret_fluct_trird_formanta(1920, 60, power_of_fluct);
 
             //2500-2570
             this->add_concret_fluct_second_formanta(2500, 70, power_of_fluct);
+            this->add_concret_fluct_trird_formanta(2500, 70, power_of_fluct);
         break;
 
         case GPS_:
@@ -573,7 +602,7 @@ void randome_game::add_concret_fluct_second_formanta(int start, int length, floa
             power_of_this_ots = power_of_fluct + (this->generate_random_int_number(1, power_of_fluct * 0.1));
         else
             power_of_this_ots = power_of_fluct + (- this->generate_random_int_number(1, power_of_fluct * 0.1));
-        this->vec_of_graphik_of_second_formanta->operator[](start + i) = make_pair(this->vec_of_graphik_of_second_formanta->operator[](start + i).first, power_of_this_ots);
+        this->vec_of_graphik_of_second_formanta->operator[](start + i - 450) = make_pair(this->vec_of_graphik_of_second_formanta->operator[](start + i - 450).first, power_of_this_ots);
     }
 }
 
@@ -586,7 +615,7 @@ void randome_game::add_concret_fluct_trird_formanta(int start, int length, float
             power_of_this_ots = power_of_fluct + (this->generate_random_int_number(1, power_of_fluct * 0.1));
         else
             power_of_this_ots = power_of_fluct + (- this->generate_random_int_number(1, power_of_fluct * 0.1));
-        this->vec_of_graphik_of_trird_formanta->operator[](start + i) = make_pair(this->vec_of_graphik_of_trird_formanta->operator[](start + i).first, power_of_this_ots);
+        this->vec_of_graphik_of_trird_formanta->operator[](start + i - 450) = make_pair(this->vec_of_graphik_of_trird_formanta->operator[](start + i - 450).first, power_of_this_ots);
     }
 }
 
@@ -740,12 +769,11 @@ void randome_game::keyPressEvent(QKeyEvent *event)
 void randome_game::mousePressEvent(QMouseEvent *mEvent)
 {
     if(this->_pix_chaged_cell != nullptr){
+        scene->removeItem(this->_pix_chaged_cell);
         this->_pix_chaged_cell->hide();
         this->_pix_chaged_cell = nullptr;
     }
 
-    auto x = mEvent->windowPos().x();
-    auto y = mEvent->windowPos().y();
     auto temp = make_pair(this->view->mapToScene(mEvent->windowPos().x(), mEvent->windowPos().y()).x(), this->view->mapToScene(mEvent->windowPos().x(), mEvent->windowPos().y()).y());   //i dont now how it working, but it working!
     this->_vibrannaya_kletka = make_pair(floor(temp.second / 128), floor(temp.first / 128));
 

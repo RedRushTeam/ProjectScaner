@@ -86,10 +86,20 @@ void change_size::OK_clicked()
     if(this->is_this_will_be_prep_game){
         auto* prepod_game_ = new prepod_game(this, this->weight->text().toInt(), this->high->text().toInt());
         prepod_game_->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);
-        prepod_game_->setWindowTitle("Случайная игра");
+        prepod_game_->setWindowTitle("Игра с преподавателем");
         prepod_game_->showMaximized();
         prepod_game_->setModal(true);
         this->close();
         prepod_game_->exec();
+    }
+
+    if(this->is_this_will_be_god_game){
+        auto* god_game_ = new nastr_game(this, this->weight->text().toInt(), this->high->text().toInt());
+        god_game_->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);
+        god_game_->setWindowTitle("Настраиваемая игра");
+        god_game_->showMaximized();
+        god_game_->setModal(true);
+        this->close();
+        god_game_->exec();
     }
 }

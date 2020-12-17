@@ -51,6 +51,13 @@
 #include <QTime>
 #include <QMovie>
 #include <QRegExp>
+#include <QIcon>
+#include <QMenu>
+#include <QMenuBar>
+#include <QAction>
+#include <QTextStream>
+#include <QTextCodec>
+#include <QFile>
 
 //my includes
 //#include "help.h"

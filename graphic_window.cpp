@@ -77,16 +77,16 @@ graphic_window::graphic_window(vector<vector<type_of_item>>* vec_of_soderzimoe, 
     //chartView_3th_formanta->setRenderHint(QPainter::Antialiasing);
 
     QChart *chart_2th_formanta = new QChart();
-    chart_2th_formanta->setTitle("Вторая форманта");
+    chart_2th_formanta->setTitle("Вторая и третья форманты");
     chart_2th_formanta->setTitleFont(font_for_buttons);
     //chartView_2th_formanta->l
 
     this->series_2th_formanta = new QBarSeries(chart_2th_formanta);
     //this->series_3th_formanta = new QBarSeries(chart_2th_formanta);
 
-    QBarSet *set = new QBarSet("450-500 МГц");
+    QBarSet *set = new QBarSet("№2 450-500 МГц");
     //добавление первых 50 отсчетов на график
-    QBarSet *set_3th_formanta = new QBarSet("450-500 МГц");
+    QBarSet *set_3th_formanta = new QBarSet("№3 450-500 МГц");
 
     QStringList categories;
 
@@ -302,8 +302,8 @@ void graphic_window::zoom_0_9_x_clicked()
     axisX->clear();
     series_2th_formanta->clear();
 
-    QBarSet *set_3th_formanta = new QBarSet(QString::number(this->_now_range_2th_command.first) + "-" + QString::number(this->_now_range_2th_command.second) + " МГц");
-    QBarSet *set = new QBarSet(QString::number(this->_now_range_2th_command.first) + "-" + QString::number(this->_now_range_2th_command.second) + " МГц");
+    QBarSet *set_3th_formanta = new QBarSet("№3 " + QString::number(this->_now_range_2th_command.first) + "-" + QString::number(this->_now_range_2th_command.second) + " МГц");
+    QBarSet *set = new QBarSet("№2 " + QString::number(this->_now_range_2th_command.first) + "-" + QString::number(this->_now_range_2th_command.second) + " МГц");
     QStringList categories;
 
     for(int i = this->_now_range_2th_command.first; i <= this->_now_range_2th_command.second; ++i){
