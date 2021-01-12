@@ -26,7 +26,7 @@ private slots:
     void OK_clicked();
 
 private:
-    Ui::change_size *ui;
+    void keyPressEvent(QKeyEvent *event);
     QLineEdit *high;
     QLineEdit *weight;
 };

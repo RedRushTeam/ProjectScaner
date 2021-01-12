@@ -58,6 +58,7 @@
 #include <QTextStream>
 #include <QTextCodec>
 #include <QFile>
+#include <QPicture>
 
 //my includes
 //#include "help.h"

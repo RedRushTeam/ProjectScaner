@@ -6,6 +6,8 @@ help::help(QWidget *parent) :
     ui(new Ui::help)
 {
     ui->setupUi(this);
+
+    this->setStyleSheet("background-color: lightGray;");
 }
 
 help::~help()

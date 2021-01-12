@@ -15,7 +15,7 @@ private slots:
     // QWidget interface
 protected:
     QPushButton* start_with_rand;
-    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent  *event);
     void keyPressEvent(QKeyEvent *event);
 };
 

@@ -114,7 +114,7 @@ class randome_game : public QDialog
     Q_OBJECT
 
 public:
-    explicit randome_game(QWidget *parent = nullptr, int weight = 10, int height = 10);
+    randome_game(QWidget *parent = nullptr, int weight = 10, int height = 10);
     ~randome_game();
 
     void closeEvent(QCloseEvent *event);
@@ -145,6 +145,7 @@ public:
     pair<int, int> _coordinate_of_zakladka;
     QTimer* _timer;
     bool is_move_possible = true;
+    int start;
 
 protected slots:
     void slotTimerAlarm();

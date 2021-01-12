@@ -99,6 +99,15 @@ void prepod_game::mousePressEvent(QMouseEvent *event)
 
 void prepod_game::keyPressEvent(QKeyEvent *event)
 {
+    if(event->key() == Qt::Key_Escape){
+        QMessageBox::StandardButton mb = QMessageBox::question(this, "Внимание!", "Вы уверены, что хотите выйти?", QMessageBox::Yes | QMessageBox::No);
+
+        if(mb == QMessageBox::No)
+            return;
+        else
+            this->close();
+    }
+
     if(this->_coordinate_of_zakladka == make_pair(-1, -1)){           //место закладки не выбрано
         return; //не делаем ничего
     }

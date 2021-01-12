@@ -12,7 +12,7 @@ class con_game : public randome_game
     Q_OBJECT
 
 public:
-    explicit con_game(QWidget *parent = nullptr, int weight = 10, int height = 10, QString full_fname = "/");
+    con_game(QWidget *parent = nullptr, int weight = 10, int height = 10, QString full_fname = "/");
     ~con_game();
 
 private:

@@ -22,6 +22,7 @@ private slots:
     void textChanged(const QString &text);
 
 private:
+    void keyPressEvent(QKeyEvent *event);
     QString now_line;
     QLineEdit *pass_line;
     string password = "yava123";

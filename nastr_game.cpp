@@ -8,16 +8,28 @@ nastr_game::nastr_game(QWidget *parent, int weight, int height) : randome_game(p
     this->_coordinate_of_zakladka = make_pair(-1, -1);
 
     QFont font_for_buttons("Times new roman", 18, QFont::Bold);
+    QFont font_for_menue_bar("Times new roman", 16, QFont::Thin);
 
     QMenuBar *mb = new QMenuBar(this);          //todo оформитб его покрасивее
+    mb->setFont(font_for_menue_bar);
+    mb->setStyleSheet("QMenuBar {    background-color: grey;    margin: 2px; /* some spacing around the menu */} QMenuBar::item {    padding: 2px 25px 2px 20px;    border: 1px solid transparent; /* reserve space for selection border */}QMenuBar::item:selected {    border-color: darkblue;    background: rgba(100, 100, 100, 150);} QMenuBar::icon:checked { /* appearance of a 'checked' icon */    background: gray;    border: 1px inset gray;    position: absolute;    top: 1px;    right: 1px;    bottom: 1px;    left: 1px;} QMenuBar::separator {   height: 2px;    background: lightblue;    margin-left: 10px;    margin-right: 5px;} QMenuBar::indicator {    width: 13px;    height: 13px;}");
+
     QMenu *menuOne = new QMenu("&Действия с картой");
+    //menuOne->addSeparator();
+
+    menuOne->setStyleSheet("QMenu {    background-color: white;    margin: 2px; /* some spacing around the menu */} QMenu::item {    padding: 2px 25px 2px 20px;    border: 1px solid transparent; /* reserve space for selection border */}QMenu::item:selected {    border-color: darkblue;    background: rgba(100, 100, 100, 150);}QMenu::icon:checked { /* appearance of a 'checked' icon */    background: gray;    border: 1px inset gray;    position: absolute;    top: 1px;    right: 1px;    bottom: 1px;    left: 1px;}QMenu::separator {   height: 2px;    background: lightblue;    margin-left: 10px;    margin-right: 5px;} QMenu::indicator {    width: 13px;    height: 13px;}");
 
     QAction *upload = new QAction("&Выгрузить конфигурацию в файл", this);
     menuOne->addAction(upload);
+
     QAction *download = new QAction("&Загрузить конфигурацию из файла", this);
     menuOne->addAction(download);
+    menuOne->addSeparator();
+
     QAction *clear_all = new QAction("&Очистить конфигурацию", this);
     menuOne->addAction(clear_all);
+    menuOne->addSeparator();
+
     QAction *start_game = new QAction("&Начать игру", this);
     menuOne->addAction(start_game);
 
@@ -52,6 +64,7 @@ nastr_game::nastr_game(QWidget *parent, int weight, int height) : randome_game(p
             this->vec_of_concr_texture[i][j] = pol_128x128_;
 
     mb->addMenu(menuOne);
+    //mb->addSeparator();
 
     this->hbox->setMenuBar(mb);
 
@@ -67,6 +80,7 @@ nastr_game::nastr_game(QWidget *parent, int weight, int height) : randome_game(p
 
     QLabel* title_white_chair = new QLabel("Белое кресло", this);
     title_white_chair->setFont(font_for_buttons);
+    title_white_chair->setStyleSheet("color: rgb(0, 0, 0);");
     title_white_chair->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     grid->addWidget(title_white_chair, 0, 0, 1, 1, Qt::AlignHCenter);
 
@@ -310,7 +324,12 @@ void nastr_game::upload()
         return;
     }
 
-    QFile out("test.bin");
+    QString full_fname = QFileDialog::getSaveFileName(this, "Выберите папку", "", "BIN(*.bin)");
+
+    if(full_fname.size() == 0)
+        return;
+
+    QFile out(full_fname);
     out.open(QIODevice::WriteOnly);
     QDataStream stream(&out);
     QByteArray array;
@@ -329,8 +348,6 @@ void nastr_game::upload()
     stream << array;
 
     out.close();
-
-    int blyadovka1 = 0;
 }
 
 void nastr_game::download()
@@ -679,12 +696,37 @@ void nastr_game::start_game()
 
 void nastr_game::mousePressEvent(QMouseEvent *event)        //todo удаление объекта целиком при коллизии
 {
-    if(!this->is_game_started_now){
+    if(event->button() == Qt::RightButton){
         auto temp = make_pair(this->view->mapToScene(event->windowPos().x(), event->windowPos().y()).x(), this->view->mapToScene(event->windowPos().x(), event->windowPos().y()).y());   //i dont now how it working, but it working!
         temp = make_pair(trunc(temp.second / 128), trunc(temp.first / 128));    //нормализованная координата
         temp = make_pair(temp.first - 1, temp.second - 1);     //нормализованная координата для написанного мной костыля
 
-        if(temp.first < -1 || (temp.second < -1) || (temp.first > this->weight_of_map) || (temp.second > this->height_of_map))
+        if(temp.first <= -1 || (temp.second <= -1) || (temp.first >= this->weight_of_map) || (temp.second >= this->height_of_map))
+            return;
+
+//enum type_of_texture{empty__, white_chair_, divan_big_, simpe_divan_, pro_table_, wood_chair_128x128_, pol_128x128_, Bricks_H_, tableH_, red_square_, Bricks_V_, GG__};
+        if(this->vec_of_concr_texture[temp.first + 1][temp.second + 1] == empty__ ||
+                (this->vec_of_concr_texture[temp.first + 1][temp.second + 1] == GG__) ||
+                (this->vec_of_concr_texture[temp.first + 1][temp.second + 1] == pol_128x128_) ||
+                (this->vec_of_concr_texture[temp.first + 1][temp.second + 1] == divan_big_) ||
+                (this->vec_of_concr_texture[temp.first + 1][temp.second + 1] == simpe_divan_) ||
+                (this->vec_of_concr_texture[temp.first + 1][temp.second + 1] == pro_table_) ||
+                (this->vec_of_concr_texture[temp.first + 1][temp.second + 1] == tableH_))
+            return;
+
+        this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->rotation() + 90.);
+    }
+
+    if(!this->is_game_started_now){
+
+        if(event->button() == Qt::RightButton)
+            return;
+
+        auto temp = make_pair(this->view->mapToScene(event->windowPos().x(), event->windowPos().y()).x(), this->view->mapToScene(event->windowPos().x(), event->windowPos().y()).y());   //i dont now how it working, but it working!
+        temp = make_pair(trunc(temp.second / 128), trunc(temp.first / 128));    //нормализованная координата
+        temp = make_pair(temp.first - 1, temp.second - 1);     //нормализованная координата для написанного мной костыля
+
+        if(temp.first <= -1 || (temp.second <= -1) || (temp.first > this->weight_of_map) || (temp.second > this->height_of_map))
             return;
 
         //выборка нужной тектсуры
@@ -898,7 +940,7 @@ void nastr_game::mousePressEvent(QMouseEvent *event)        //todo удален�
         }
             break;
 
-        case red_square_:{  //this code is shit     //todo добавить эту координату в бинарник
+        case red_square_:{  //this code is shit
 
             if(this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] == empty_ || (this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] == GG_))
                 return;
@@ -941,6 +983,10 @@ void nastr_game::mousePressEvent(QMouseEvent *event)        //todo удален�
         }
     }
     else{
+
+        if(event->button() == Qt::RightButton)
+            return;
+
         if(this->_pix_chaged_cell != nullptr){
             this->_pix_chaged_cell->hide();
             this->_pix_chaged_cell = nullptr;
@@ -965,6 +1011,15 @@ void nastr_game::mousePressEvent(QMouseEvent *event)        //todo удален�
 
 void nastr_game::keyPressEvent(QKeyEvent *event)
 {
+    if(event->key() == Qt::Key_Escape){
+        QMessageBox::StandardButton mb = QMessageBox::question(this, "Внимание!", "Вы уверены, что хотите выйти?", QMessageBox::Yes | QMessageBox::No);
+
+        if(mb == QMessageBox::No)
+            return;
+        else
+            this->close();
+    }
+
     if(!this->is_game_started_now){           //место закладки не выбрано
         return; //не делаем ничего
     }

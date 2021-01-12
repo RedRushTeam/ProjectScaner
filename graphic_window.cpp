@@ -30,41 +30,49 @@ graphic_window::graphic_window(vector<vector<type_of_item>>* vec_of_soderzimoe, 
     QPushButton *plus_50_k_masht = new QPushButton("+50 МГц к масштабу");
     plus_50_k_masht->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     plus_50_k_masht->setCursor(QCursor(Qt::PointingHandCursor));
+    plus_50_k_masht->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
     plus_50_k_masht->setFont(font_for_buttons);
 
     QPushButton *zoom_0_9_x = new QPushButton("Отдалить график по оси X");
     zoom_0_9_x->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     zoom_0_9_x->setCursor(QCursor(Qt::PointingHandCursor));
+    zoom_0_9_x->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
     zoom_0_9_x->setFont(font_for_buttons);
 
     QPushButton *zoom_1_1_x = new QPushButton("Приблизить график по оси X");
     zoom_1_1_x->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     zoom_1_1_x->setCursor(QCursor(Qt::PointingHandCursor));
+    zoom_1_1_x->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
     zoom_1_1_x->setFont(font_for_buttons);
 
     QPushButton *zoom_1_1_y = new QPushButton("Приблизить график по оси Y");
     zoom_1_1_y->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     zoom_1_1_y->setCursor(QCursor(Qt::PointingHandCursor));
+    zoom_1_1_y->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
     zoom_1_1_y->setFont(font_for_buttons);
 
     QPushButton *zoom_0_9_y = new QPushButton("Отдалить график по оси Y");
     zoom_0_9_y->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     zoom_0_9_y->setCursor(QCursor(Qt::PointingHandCursor));
+    zoom_0_9_y->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
     zoom_0_9_y->setFont(font_for_buttons);
 
     QPushButton *minus_50_k_masht = new QPushButton("-50 МГц к масштабу");
     minus_50_k_masht->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     minus_50_k_masht->setCursor(QCursor(Qt::PointingHandCursor));
+    minus_50_k_masht->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
     minus_50_k_masht->setFont(font_for_buttons);
 
     QPushButton *minus_100_k_masht = new QPushButton("-100 МГц к масштабу");
     minus_100_k_masht->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     minus_100_k_masht->setCursor(QCursor(Qt::PointingHandCursor));
+    minus_100_k_masht->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
     minus_100_k_masht->setFont(font_for_buttons);
 
     QPushButton *plus_100_k_masht = new QPushButton("+100 МГц к масштабу");
     plus_100_k_masht->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     plus_100_k_masht->setCursor(QCursor(Qt::PointingHandCursor));
+    plus_100_k_masht->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
     plus_100_k_masht->setFont(font_for_buttons);
 
     chartView_2th_formanta = new QChartView();
@@ -122,7 +130,7 @@ graphic_window::graphic_window(vector<vector<type_of_item>>* vec_of_soderzimoe, 
     series_2th_formanta->attachAxis(axisX);
 
     this->axisY = new QValueAxis();
-    this->axisY->setRange(0., 20.);
+    this->axisY->setRange(0., 60.);
     _now_range_2th_command_y = make_pair(0., 20.);
     chart_2th_formanta->addAxis(this->axisY, Qt::AlignLeft);
     series_2th_formanta->attachAxis(this->axisY);
@@ -171,6 +179,9 @@ void graphic_window::keyPressEvent(QKeyEvent *event)
 
     if(event->key() == Qt::Key_D || event->key() == 0x0412)
         this->_50mgz_plused();
+
+    if(event->key() == Qt::Key_Escape)
+        this->close();
 }
 
 void graphic_window::_50mgz_plused()    //done!

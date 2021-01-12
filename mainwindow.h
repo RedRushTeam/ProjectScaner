@@ -17,7 +17,7 @@ class MainWindow : public QWidget
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    void mousePressEvent(QMouseEvent *mEvent);
+    void mousePressEvent(QGraphicsSceneMouseEvent  *mEvent);
 
 private slots:
     void open_help_window() const;
@@ -28,6 +28,7 @@ private slots:
     void open_con_window();
     void open_constr_window();
 private:
+    void keyPressEvent(QKeyEvent *event);
 
     ////
     myGraphicsView* view;

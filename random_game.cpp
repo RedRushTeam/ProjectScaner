@@ -7,6 +7,8 @@ randome_game::randome_game(QWidget *parent, int weight, int height) :
 {
     ui->setupUi(this);
 
+    this->setStyleSheet("background-color: lightGray;");
+
     this->gen = new std::mt19937(time(NULL));
 
     this->_timer = new QTimer();
@@ -62,7 +64,7 @@ randome_game::~randome_game()
 void randome_game::closeEvent(QCloseEvent *event)
 {
     event->accept();
-    this->parentWidget()->parentWidget()->show();   //done
+    //this->parentWidget()->parentWidget()->show();   //done
 }
 
 void randome_game::resizeEvent(QResizeEvent *event)
@@ -348,6 +350,8 @@ void randome_game::add_hero()
 
 void randome_game::add_zakladka()
 {
+    this->start = this->generate_random_int_number(0, 15) * 25 + 800;
+
     lablel_add_zakl:
     int _x = this->generate_random_int_number(0, this->height_of_map + 1);
     int _y = this->generate_random_int_number(0, this->weight_of_map + 1);
@@ -392,7 +396,6 @@ void randome_game::generate_flukt()         //mabe rewrite this     //TODO CHECK
         }
     }
     //добавление закладки в список флуктуаций
-    auto shit = this->_coordinate_of_zakladka;
     this->vec_of_fluct[this->_coordinate_of_zakladka.first][this->_coordinate_of_zakladka.second].first = active_semiconductors_;
     this->vec_of_fluct[this->_coordinate_of_zakladka.first][this->_coordinate_of_zakladka.second].second = this->generate_random_int_number(40, 60);
 }
@@ -403,85 +406,213 @@ void randome_game::generate_graphik_perems()
     for(int i = 0; i < this->vec_of_graphik_of_second_formanta->size(); ++i)
         this->vec_of_graphik_of_second_formanta->operator[](i) = make_pair(static_cast<float>(i + 450), static_cast<float>(this->generate_random_int_number(8, 15)));
 
-    //
     auto coordinate_of_hero = this->_hero->coordinate;
 
     vector<pair<pair<int, int>, pair<type_of_fluctuation, float>>> vec_of_visible_fluct;
 
 
+    // TODO rewrite this
     switch (this->_hero->_orientation_of_hero) {
-    case left_:
-        //все ряды влево
-        for(int j = 1; j <= 5; ++j)
-            for(int i = coordinate_of_hero.first - j; i <= coordinate_of_hero.first + j; ++i)
-                if(this->is_coordinate_is_normal(make_pair(i, coordinate_of_hero.second - j)))   //клетка допустима
-                    if(this->vec_of_fluct[i][coordinate_of_hero.second - j].first != no_fluct_){  //в клетке флуктуация
-                        float now_pwr = this->vec_of_fluct[i][coordinate_of_hero.second - j].second;
-                        for(int k = j - 1; k > 0; --k)
+    case left_:        //все ряды влево
+
+        //единственная клетка
+        if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first, coordinate_of_hero.second - 1)))   //клетка допустима
+            if(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second - 1].first != no_fluct_){  //в клетке флуктуация
+                float now_pwr = this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second - 1].second;
+                now_pwr = now_pwr * 0.95;
+                vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first, coordinate_of_hero.second - 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second - 1].first, now_pwr))); //флуктуация сохранена
+            }
+
+        //прямоугольник **
+        //              **
+        //              **
+        for(int i = 0; i < 2; ++i)
+                if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first - 1, coordinate_of_hero.second + (i - 1) - 1)))   //клетка допустима      FF
+                    if(this->vec_of_fluct[coordinate_of_hero.first - 1][coordinate_of_hero.second + (i - 1) - 1].first != no_fluct_){  //в клетке флуктуация  **
+                        float now_pwr = this->vec_of_fluct[coordinate_of_hero.first - 1][coordinate_of_hero.second + (i - 1) - 1].second;//                   **
+                        for(int k = i + 2; k > 0; --k)
                             now_pwr = now_pwr * 0.95;
-                        vec_of_visible_fluct.push_back(make_pair(make_pair(i, coordinate_of_hero.second - j), make_pair(this->vec_of_fluct[i][coordinate_of_hero.second - j].first, now_pwr))); //флуктуация сохранена
-        }
+                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first - 1, coordinate_of_hero.second + (i - 1) - 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first - 1][coordinate_of_hero.second + (i - 1) - 1].first, now_pwr))); //флуктуация сохранена
+                    }
+
+        for(int i = 0; i < 2; ++i)
+                if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first, coordinate_of_hero.second + (i - 1) - 1)))   //клетка допустима      **
+                    if(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + (i - 1) - 1].first != no_fluct_){  //в клетке флуктуация  FF
+                        float now_pwr = this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + (i - 1) - 1].second;//                   **
+                        for(int k = i + 2; k > 0; --k)
+                            now_pwr = now_pwr * 0.95;
+                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first, coordinate_of_hero.second + (i - 1) - 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + (i - 1) - 1].first, now_pwr))); //флуктуация сохранена
+                    }
+
+        for(int i = 0; i < 2; ++i)
+                if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + 1, coordinate_of_hero.second + (i - 1) - 1)))   //клетка допустима      **
+                    if(this->vec_of_fluct[coordinate_of_hero.first + 1][coordinate_of_hero.second + (i - 1) - 1].first != no_fluct_){  //в клетке флуктуация  **
+                        float now_pwr = this->vec_of_fluct[coordinate_of_hero.first + 1][coordinate_of_hero.second + (i - 1) - 1].second;//                   FF
+                        for(int k = i + 2; k > 0; --k)
+                            now_pwr = now_pwr * 0.95;
+                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + 1, coordinate_of_hero.second + (i - 1) - 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first + 1][coordinate_of_hero.second + (i - 1) - 1].first, now_pwr))); //флуктуация сохранена
+                    }
+
+        //полоска 5х1
+        for(int i = 0; i < 5; ++i)
+            if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + (i - 2), coordinate_of_hero.second - 4)))   //клетка допустима
+                if(this->vec_of_fluct[coordinate_of_hero.first + (i - 2)][coordinate_of_hero.second - 4].first != no_fluct_){  //в клетке флуктуация
+                    float now_pwr = this->vec_of_fluct[coordinate_of_hero.first + (i - 2)][coordinate_of_hero.second - 4].second;
+                    for(int k = 0; k > 4; ++k)
+                        now_pwr = now_pwr * 0.95;
+                    vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + (i - 2), coordinate_of_hero.second - 4), make_pair(this->vec_of_fluct[coordinate_of_hero.first + (i - 2)][coordinate_of_hero.second - 4].first, now_pwr))); //флуктуация сохранена
+                }
         break;
     case right_:
         //все ряды вправо
-        for(int j = 1; j <= 5; ++j)
-            for(int i = coordinate_of_hero.first - j; i <= coordinate_of_hero.first + j; ++i)
-                if(this->is_coordinate_is_normal(make_pair(i, coordinate_of_hero.second + j)))   //клетка допустима
-                    if(this->vec_of_fluct[i][coordinate_of_hero.second + j].first != no_fluct_){  //в клетке флуктуация
-                        float now_pwr = this->vec_of_fluct[i][coordinate_of_hero.second + j].second;
-                        for(int k = j - 1; k > 0; --k)
+        //единственная клетка
+        if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first, coordinate_of_hero.second + 1)))   //клетка допустима
+            if(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + 1].first != no_fluct_){  //в клетке флуктуация
+                float now_pwr = this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + 1].second;
+                now_pwr = now_pwr * 0.95;
+                vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first, coordinate_of_hero.second + 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + 1].first, now_pwr))); //флуктуация сохранена
+            }
+
+        //прямоугольник **
+        //              **
+        //              **
+        for(int i = 0; i < 2; ++i)
+                if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first - 1, coordinate_of_hero.second + (i + 1) + 1)))   //клетка допустима      FF
+                    if(this->vec_of_fluct[coordinate_of_hero.first - 1][coordinate_of_hero.second + (i + 1) + 1].first != no_fluct_){  //в клетке флуктуация  **
+                        float now_pwr = this->vec_of_fluct[coordinate_of_hero.first - 1][coordinate_of_hero.second + (i + 1) + 1].second;//                   **
+                        for(int k = i + 2; k > 0; --k)
                             now_pwr = now_pwr * 0.95;
-                        vec_of_visible_fluct.push_back(make_pair(make_pair(i, coordinate_of_hero.second + j), make_pair(this->vec_of_fluct[i][coordinate_of_hero.second + j].first, now_pwr))); //флуктуация сохранена
-        }
+                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first - 1, coordinate_of_hero.second + (i + 1) + 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first - 1][coordinate_of_hero.second + (i + 1) + 1].first, now_pwr))); //флуктуация сохранена
+                    }
+
+        for(int i = 0; i < 2; ++i)
+                if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first, coordinate_of_hero.second + (i + 1) + 1)))   //клетка допустима      **
+                    if(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + (i + 1) + 1].first != no_fluct_){  //в клетке флуктуация  FF
+                        float now_pwr = this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + (i + 1) + 1].second;//                   **
+                        for(int k = i + 2; k > 0; --k)
+                            now_pwr = now_pwr * 0.95;
+                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first, coordinate_of_hero.second + (i + 1) + 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + (i + 1) + 1].first, now_pwr))); //флуктуация сохранена
+                    }
+
+        for(int i = 0; i < 2; ++i)
+                if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + 1, coordinate_of_hero.second + (i + 1) + 1)))   //клетка допустима      **
+                    if(this->vec_of_fluct[coordinate_of_hero.first + 1][coordinate_of_hero.second + (i + 1) + 1].first != no_fluct_){  //в клетке флуктуация  **
+                        float now_pwr = this->vec_of_fluct[coordinate_of_hero.first + 1][coordinate_of_hero.second + (i + 1) + 1].second;//                   FF
+                        for(int k = i + 2; k > 0; --k)
+                            now_pwr = now_pwr * 0.95;
+                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + 1, coordinate_of_hero.second + (i + 1) + 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first + 1][coordinate_of_hero.second + (i + 1) + 1].first, now_pwr))); //флуктуация сохранена
+                    }
+
+        //полоска 5х1
+        for(int i = 0; i < 5; ++i)
+            if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + (i - 2), coordinate_of_hero.second + 4)))   //клетка допустима
+                if(this->vec_of_fluct[coordinate_of_hero.first + (i - 2)][coordinate_of_hero.second + 4].first != no_fluct_){  //в клетке флуктуация
+                    float now_pwr = this->vec_of_fluct[coordinate_of_hero.first + (i - 2)][coordinate_of_hero.second + 4].second;
+                    for(int k = 0; k > 4; ++k)
+                        now_pwr = now_pwr * 0.95;
+                    vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + (i - 2), coordinate_of_hero.second + 4), make_pair(this->vec_of_fluct[coordinate_of_hero.first + (i - 2)][coordinate_of_hero.second + 4].first, now_pwr))); //флуктуация сохранена
+                }
         break;
     case up_:
         //все ряды вверх
-        for(int j = 1; j <= 5; ++j)
-            for(int i = coordinate_of_hero.second - j; i <= coordinate_of_hero.second + j; ++i)
-                if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first - j, i)))   //клетка допустима
-                    if(this->vec_of_fluct[coordinate_of_hero.first - j][i].first != no_fluct_){  //в клетке флуктуация
-                        float now_pwr = this->vec_of_fluct[coordinate_of_hero.first - j][i].second;
-                        for(int k = j - 1; k > 0; --k)
+        //единственная клетка
+        if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first - 1, coordinate_of_hero.second)))   //клетка допустима
+            if(this->vec_of_fluct[coordinate_of_hero.first - 1][coordinate_of_hero.second].first != no_fluct_){  //в клетке флуктуация
+                float now_pwr = this->vec_of_fluct[coordinate_of_hero.first - 1][coordinate_of_hero.second].second;
+                now_pwr = now_pwr * 0.95;
+                vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first - 1, coordinate_of_hero.second), make_pair(this->vec_of_fluct[coordinate_of_hero.first - 1][coordinate_of_hero.second].first, now_pwr))); //флуктуация сохранена
+            }
+
+        //прямоугольник **
+        //              **
+        //              **
+        for(int i = 0; i < 2; ++i)
+                if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + (i - 1) - 1, coordinate_of_hero.second - 1)))   //клетка допустима      FF
+                    if(this->vec_of_fluct[coordinate_of_hero.first + (i - 1) - 1][coordinate_of_hero.second - 1].first != no_fluct_){  //в клетке флуктуация  **
+                        float now_pwr = this->vec_of_fluct[coordinate_of_hero.first + (i - 1) - 1][coordinate_of_hero.second - 1].second;//                   **
+                        for(int k = i + 2; k > 0; --k)
                             now_pwr = now_pwr * 0.95;
-                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first - j, i), make_pair(this->vec_of_fluct[coordinate_of_hero.first - j][i].first, now_pwr))); //флуктуация сохранена
-        }
-                        /*
-        //это для up
-        //на одной высоте с героем
-        if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first, coordinate_of_hero.second - 1)))   //клетка допустима
-            if(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second - 1].first != no_fluct_)  //в клетке флуктуация
-                vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first, coordinate_of_hero.second - 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second - 1].first, this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second - 1].second * 0.5))); //флуктуация сохранена
-        if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first, coordinate_of_hero.second + 1)))   //клетка допустима
-            if(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + 1].first != no_fluct_)  //в клетке флуктуация
-                vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first, coordinate_of_hero.second + 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + 1].first, this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + 1].second * 0.5))); //флуктуация сохранена
-        //на высоте +1 под героем
-        if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + 1, coordinate_of_hero.second - 1)))   //клетка допустима
-            if(this->vec_of_fluct[coordinate_of_hero.first + 1][coordinate_of_hero.second - 1].first != no_fluct_)  //в клетке флуктуация
-                vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + 1, coordinate_of_hero.second - 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first + 1][coordinate_of_hero.second - 1].first, this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + 1].second * 0.5))); //флуктуация сохранена
-        if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + 1, coordinate_of_hero.second)))   //клетка допустима
-            if(this->vec_of_fluct[coordinate_of_hero.first + 1][coordinate_of_hero.second].first != no_fluct_)  //в клетке флуктуация
-                vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first, coordinate_of_hero.second + 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + 1].first, this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + 1].second * 0.5))); //флуктуация сохранена
-        if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + 1, coordinate_of_hero.second + 1)))   //клетка допустима
-            if(this->vec_of_fluct[coordinate_of_hero.first + 1][coordinate_of_hero.second + 1].first != no_fluct_)  //в клетке флуктуация
-                vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first, coordinate_of_hero.second + 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + 1].first, this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + 1].second * 0.5))); //флуктуация сохранена
-        //на высоте +2 под героем
-        if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + 2, coordinate_of_hero.second)))   //клетка допустима
-            if(this->vec_of_fluct[coordinate_of_hero.first + 2][coordinate_of_hero.second].first != no_fluct_)  //в клетке флуктуация
-                vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first, coordinate_of_hero.second + 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + 1].first, this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + 1].second * 0.5))); //флуктуация сохранена
-        */
+                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + (i - 1) - 1, coordinate_of_hero.second - 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first + (i - 1) - 1][coordinate_of_hero.second - 1].first, now_pwr))); //флуктуация сохранена
+                    }
+
+        for(int i = 0; i < 2; ++i)
+                if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + (i - 1) - 1, coordinate_of_hero.second)))   //клетка допустима      **
+                    if(this->vec_of_fluct[coordinate_of_hero.first + (i - 1) - 1][coordinate_of_hero.second].first != no_fluct_){  //в клетке флуктуация  FF
+                        float now_pwr = this->vec_of_fluct[coordinate_of_hero.first + (i - 1) - 1][coordinate_of_hero.second].second;//                   **
+                        for(int k = i + 2; k > 0; --k)
+                            now_pwr = now_pwr * 0.95;
+                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + (i - 1) - 1, coordinate_of_hero.second), make_pair(this->vec_of_fluct[coordinate_of_hero.first + (i - 1) - 1][coordinate_of_hero.second].first, now_pwr))); //флуктуация сохранена
+                    }
+
+        for(int i = 0; i < 2; ++i)
+                if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + (i - 1) - 1, coordinate_of_hero.second + 1)))   //клетка допустима      **
+                    if(this->vec_of_fluct[coordinate_of_hero.first + (i - 1) - 1][coordinate_of_hero.second + 1].first != no_fluct_){  //в клетке флуктуация  **
+                        float now_pwr = this->vec_of_fluct[coordinate_of_hero.first + (i - 1) - 1][coordinate_of_hero.second + 1].second;//                   FF
+                        for(int k = i + 2; k > 0; --k)
+                            now_pwr = now_pwr * 0.95;
+                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + (i - 1) - 1, coordinate_of_hero.second + 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first + (i - 1) - 1][coordinate_of_hero.second + 1].first, now_pwr))); //флуктуация сохранена
+                    }
+
+        //полоска 5х1
+        for(int i = 0; i < 5; ++i)
+            if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first - 4, coordinate_of_hero.second + (i - 2))))   //клетка допустима
+                if(this->vec_of_fluct[coordinate_of_hero.first - 4][coordinate_of_hero.second + (i - 2)].first != no_fluct_){  //в клетке флуктуация
+                    float now_pwr = this->vec_of_fluct[coordinate_of_hero.first - 4][coordinate_of_hero.second + (i - 2)].second;
+                    for(int k = 0; k > 4; ++k)
+                        now_pwr = now_pwr * 0.95;
+                    vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first - 4, coordinate_of_hero.second + (i - 2)), make_pair(this->vec_of_fluct[coordinate_of_hero.first - 4][coordinate_of_hero.second + (i - 2)].first, now_pwr))); //флуктуация сохранена
+                }
 
         break;
     case down_:
         //все ряды вниз
-        for(int j = 1; j <= 5; ++j)
-            for(int i = coordinate_of_hero.second - j; i <= coordinate_of_hero.second + j; ++i)
-                if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + j, i)))   //клетка допустима
-                    if(this->vec_of_fluct[coordinate_of_hero.first + j][i].first != no_fluct_){  //в клетке флуктуация
-                        float now_pwr = this->vec_of_fluct[coordinate_of_hero.first + j][i].second;
-                        for(int k = j - 1; k > 0; --k)
+        //единственная клетка
+        if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + 1, coordinate_of_hero.second)))   //клетка допустима
+            if(this->vec_of_fluct[coordinate_of_hero.first + 1][coordinate_of_hero.second].first != no_fluct_){  //в клетке флуктуация
+                float now_pwr = this->vec_of_fluct[coordinate_of_hero.first + 1][coordinate_of_hero.second].second;
+                now_pwr = now_pwr * 0.95;
+                vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + 1, coordinate_of_hero.second), make_pair(this->vec_of_fluct[coordinate_of_hero.first + 1][coordinate_of_hero.second].first, now_pwr))); //флуктуация сохранена
+            }
+
+        //прямоугольник **
+        //              **
+        //              **
+        for(int i = 0; i < 2; ++i)
+                if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + (i + 1) + 1, coordinate_of_hero.second - 1)))   //клетка допустима      FF
+                    if(this->vec_of_fluct[coordinate_of_hero.first + (i + 1) + 1][coordinate_of_hero.second - 1].first != no_fluct_){  //в клетке флуктуация  **
+                        float now_pwr = this->vec_of_fluct[coordinate_of_hero.first + (i + 1) + 1][coordinate_of_hero.second - 1].second;//                   **
+                        for(int k = i + 2; k > 0; --k)
                             now_pwr = now_pwr * 0.95;
-                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + j, i), make_pair(this->vec_of_fluct[coordinate_of_hero.first + j][i].first, now_pwr))); //флуктуация сохранена
-        }
+                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + (i + 1) + 1, coordinate_of_hero.second - 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first + (i + 1) + 1][coordinate_of_hero.second - 1].first, now_pwr))); //флуктуация сохранена
+                    }
+
+        for(int i = 0; i < 2; ++i)
+                if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + (i + 1) + 1, coordinate_of_hero.second)))   //клетка допустима      **
+                    if(this->vec_of_fluct[coordinate_of_hero.first + (i + 1) + 1][coordinate_of_hero.second].first != no_fluct_){  //в клетке флуктуация  FF
+                        float now_pwr = this->vec_of_fluct[coordinate_of_hero.first + (i + 1) + 1][coordinate_of_hero.second].second;//                   **
+                        for(int k = i + 2; k > 0; --k)
+                            now_pwr = now_pwr * 0.95;
+                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + (i + 1) + 1, coordinate_of_hero.second), make_pair(this->vec_of_fluct[coordinate_of_hero.first + (i + 1) + 1][coordinate_of_hero.second].first, now_pwr))); //флуктуация сохранена
+                    }
+
+        for(int i = 0; i < 2; ++i)
+                if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + (i + 1) + 1, coordinate_of_hero.second + 1)))   //клетка допустима      **
+                    if(this->vec_of_fluct[coordinate_of_hero.first + (i + 1) + 1][coordinate_of_hero.second + 1].first != no_fluct_){  //в клетке флуктуация  **
+                        float now_pwr = this->vec_of_fluct[coordinate_of_hero.first + (i + 1) + 1][coordinate_of_hero.second + 1].second;//                   FF
+                        for(int k = i + 2; k > 0; --k)
+                            now_pwr = now_pwr * 0.95;
+                        vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + (i + 1) + 1, coordinate_of_hero.second + 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first + (i + 1) + 1][coordinate_of_hero.second + 1].first, now_pwr))); //флуктуация сохранена
+                    }
+
+        //полоска 5х1
+        for(int i = 0; i < 5; ++i)
+            if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + 4, coordinate_of_hero.second + (i - 2))))   //клетка допустима
+                if(this->vec_of_fluct[coordinate_of_hero.first + 4][coordinate_of_hero.second + (i - 2)].first != no_fluct_){  //в клетке флуктуация
+                    float now_pwr = this->vec_of_fluct[coordinate_of_hero.first + 4][coordinate_of_hero.second + (i - 2)].second;
+                    for(int k = 0; k > 4; ++k)
+                        now_pwr = now_pwr * 0.95;
+                    vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + 4, coordinate_of_hero.second + (i - 2)), make_pair(this->vec_of_fluct[coordinate_of_hero.first + 4][coordinate_of_hero.second + (i - 2)].first, now_pwr))); //флуктуация сохранена
+                }
         break;
     }
 
@@ -529,22 +660,24 @@ void randome_game::generate_graphik_perems()
         //enum type_of_fluctuation{no_fluct_, inactive_semiconductors_, active_semiconductors_, bluetooth_, _5g_, _4g_, _3g_, GPS_, radio_, GLONASS_};
         switch (type_) {
         case inactive_semiconductors_:
-            //4800-4990
-            this->add_concret_fluct_second_formanta(4800, 190, power_of_fluct);
+            //1000-1025
+            this->add_concret_fluct_second_formanta(1000, 25, power_of_fluct * 0.5);
+            this->add_concret_fluct_trird_formanta(1000, 25, power_of_fluct);
         break;
 
         case active_semiconductors_:
             //1000-1025
-            this->add_concret_fluct_second_formanta(1000, 25, power_of_fluct);
-            this->add_concret_fluct_trird_formanta(1000, 25, power_of_fluct * 0.5);
+            this->add_concret_fluct_second_formanta(this->start, 25, power_of_fluct);
+            this->add_concret_fluct_trird_formanta(this->start, 25, power_of_fluct * 0.5);
         break;
 
         case bluetooth_:
-            //4800-4990
-            this->add_concret_fluct_second_formanta(4800, 190, power_of_fluct);
+            //2400-2500
+            this->add_concret_fluct_second_formanta(2400, 100, power_of_fluct);
+            this->add_concret_fluct_trird_formanta(2400, 100, power_of_fluct);
         break;
 
-        case _5g_:  //TODO НАПИСАТЬ АНАЛОГИЧНЫЙ КОД ДЛЯ ДРУГИХ ФЛУКТУАЦИЙ
+        case _5g_:
             //4800-4990
             this->add_concret_fluct_second_formanta(4800, 190, power_of_fluct);
             this->add_concret_fluct_trird_formanta(4800, 190, power_of_fluct);
@@ -569,24 +702,33 @@ void randome_game::generate_graphik_perems()
             this->add_concret_fluct_second_formanta(1920, 60, power_of_fluct);
             this->add_concret_fluct_trird_formanta(1920, 60, power_of_fluct);
 
-            //2500-2570
-            this->add_concret_fluct_second_formanta(2500, 70, power_of_fluct);
-            this->add_concret_fluct_trird_formanta(2500, 70, power_of_fluct);
+            //2110-2170
+            this->add_concret_fluct_second_formanta(2110, 60, power_of_fluct);
+            this->add_concret_fluct_trird_formanta(2110, 60, power_of_fluct);
         break;
 
         case GPS_:
-            //4800-4990
-            this->add_concret_fluct_second_formanta(4800, 190, power_of_fluct);
+            //1176-1218
+            this->add_concret_fluct_second_formanta(1176, 42, power_of_fluct);
+            this->add_concret_fluct_trird_formanta(1176, 42, power_of_fluct);
         break;
 
         case radio_:
-            //4800-4990
-            this->add_concret_fluct_second_formanta(4800, 190, power_of_fluct);
+            //420-434
+            this->add_concret_fluct_second_formanta(420, 14, power_of_fluct);
+            this->add_concret_fluct_trird_formanta(420, 14, power_of_fluct);
         break;
 
         case GLONASS_:
-            //4800-4990
-            this->add_concret_fluct_second_formanta(4800, 190, power_of_fluct);
+            //1575-1602
+            this->add_concret_fluct_second_formanta(1575, 27, power_of_fluct);
+            this->add_concret_fluct_trird_formanta(1575, 27, power_of_fluct);
+            //1207-1248
+            this->add_concret_fluct_second_formanta(1207, 41, power_of_fluct);
+            this->add_concret_fluct_trird_formanta(1207, 41, power_of_fluct);
+            //1176-1202
+            this->add_concret_fluct_second_formanta(1176, 26, power_of_fluct);
+            this->add_concret_fluct_trird_formanta(1176, 26, power_of_fluct);
         break;
         }
 
@@ -632,6 +774,15 @@ bool randome_game::is_coordinate_is_normal(pair<int, int> _coordinate) const
 
 void randome_game::keyPressEvent(QKeyEvent *event)
 {
+    if(event->key() == Qt::Key_Escape){
+        QMessageBox::StandardButton mb = QMessageBox::question(this, "Внимание!", "Вы уверены, что хотите выйти?", QMessageBox::Yes | QMessageBox::No);
+
+        if(mb == QMessageBox::No)
+            return;
+        else
+            this->close();
+    }
+
     if(!this->is_move_possible)
         return;
 
@@ -739,12 +890,16 @@ void randome_game::keyPressEvent(QKeyEvent *event)
 
         if((this->vec_of_soderzimoe[this->_vibrannaya_kletka.first][this->_vibrannaya_kletka.second] != empty_) &&
                     (this->vec_of_soderzimoe[this->_vibrannaya_kletka.first][this->_vibrannaya_kletka.second] != GG_)){
-            if(this->_coordinate_of_zakladka == _vibrannaya_kletka)
+            if(this->_coordinate_of_zakladka == _vibrannaya_kletka){
                 QMessageBox::warning(this, "Поздравляю, вы нашли закладку!", "Поздравляю, вы нашли закладку!");
+                this->close();
+                return;
+            }
             else{
                 this->col_vo_popytok = this->col_vo_popytok - 1;
                 if(col_vo_popytok == 0){
-                    QMessageBox::warning(this, "Мимо!", "Вы проиграли!");
+                    QMessageBox::warning(this, "Мимо!", "Вы проиграли, попробуйте еще раз!");
+                    this->close();
                     return;
                 }
                 QMessageBox::warning(this, "Мимо!", "У вас осталось " + QString::number(this->col_vo_popytok) + " попыток!");
@@ -759,10 +914,7 @@ void randome_game::keyPressEvent(QKeyEvent *event)
         auto graphik_window = new graphic_window(&(this->vec_of_soderzimoe), &(this->vec_of_fluct), this->vec_of_graphik_of_second_formanta, this->vec_of_graphik_of_trird_formanta, this);
         graphik_window->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);
         graphik_window->setWindowTitle("Просмотр графика");
-        graphik_window->showMaximized();
-        graphik_window->setModal(true);
-        //this->close();
-        graphik_window->exec();
+        graphik_window->showFullScreen();
     }
 }
 
@@ -776,6 +928,9 @@ void randome_game::mousePressEvent(QMouseEvent *mEvent)
 
     auto temp = make_pair(this->view->mapToScene(mEvent->windowPos().x(), mEvent->windowPos().y()).x(), this->view->mapToScene(mEvent->windowPos().x(), mEvent->windowPos().y()).y());   //i dont now how it working, but it working!
     this->_vibrannaya_kletka = make_pair(floor(temp.second / 128), floor(temp.first / 128));
+
+    if(this->_vibrannaya_kletka.first <= -1 || (this->_vibrannaya_kletka.second <= -1) || (this->_vibrannaya_kletka.first > this->weight_of_map) || (this->_vibrannaya_kletka.second > this->height_of_map))
+        return;
 
     if(this->vec_of_soderzimoe[this->_vibrannaya_kletka.first][this->_vibrannaya_kletka.second] == empty_ || (this->vec_of_soderzimoe[this->_vibrannaya_kletka.first][this->_vibrannaya_kletka.second] == GG_)){
         this->_vibrannaya_kletka = make_pair(-1, -1);

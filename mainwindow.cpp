@@ -4,6 +4,8 @@
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent)
 {
+    this->setStyleSheet("background-color: lightGrey;");
+
     vbox = new QVBoxLayout(this);
 
     vbox->setContentsMargins(100, 15, 100, 200);
@@ -15,6 +17,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     title = new QLabel("Project SCANER", this);
     title->setFont(font_for_buttons);
+    title->setScaledContents(true);
+    QPixmap* title_pixmap = new QPixmap();
+    title_pixmap->load(":/new/random_game_textures/new/random_game_textures/proekt.png");  //загрузка красного квадрата в png
+    title->setPixmap(*title_pixmap);
+    title->resize(title_pixmap->size());
     title->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     vbox->addWidget(title);
 
@@ -63,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent)
     about_ = new QPushButton("О программе", this);
     about_->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     about_->setCursor(QCursor(Qt::PointingHandCursor));
-    about_->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:6px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;  font: bold 26px;   min-width: 10em;     padding: 12px}");
+    about_->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;  font: bold 26px;   min-width: 10em;     padding: 6px}");
     about_->setFont(font_for_buttons);
     vbox->addWidget(about_);
 
@@ -87,7 +94,7 @@ MainWindow::MainWindow(QWidget *parent)
     //this->showMaximized();
 }
 
-void MainWindow::mousePressEvent(QMouseEvent *mEvent)
+void MainWindow::mousePressEvent(QGraphicsSceneMouseEvent  *mEvent)
 {
     //this->view->mapToScene(mEvent->windowPos().x(), mEvent->windowPos().y()).x(), this->view->mapToScene(mEvent->windowPos().x(), mEvent->windowPos().y()).y();
 }
@@ -120,17 +127,15 @@ void MainWindow::open_password_window()
     auto password_dialog_ = new password_dialog();
     password_dialog_->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint);
     password_dialog_->setWindowTitle("Вход в режим с преподавателем");
-    password_dialog_->setMinimumSize(480, 320);
-    password_dialog_->setMaximumSize(480, 320);
-    password_dialog_->setModal(true);
+    password_dialog_->showFullScreen();
     password_dialog_->exec();
 
     if(password_dialog_->is_password_true){
         this->is_password_true = true;
-        _pass->setStyleSheet("QPushButton {     background-color: rgba(0, 85, 0, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 16px;     min-width: 10em;     padding: 6px}");
+        _pass->setStyleSheet("QPushButton {     background-color: rgba(0, 85, 0, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
 
-        start_with_prep->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 16px;     min-width: 10em;     padding: 6px}");
-        start_with_settings->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 16px;     min-width: 10em;     padding: 6px}");
+        start_with_prep->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;  font: bold 26px;   min-width: 10em;     padding: 6px}");
+        start_with_settings->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;  font: bold 26px;   min-width: 10em;     padding: 6px}");
     }
 
 }
@@ -140,28 +145,20 @@ void MainWindow::open_game_window()
     auto change_size_ = new change_size(this);
     change_size_->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint);
     change_size_->setWindowTitle("Выберете размер карты");
-    change_size_->setMinimumSize(480, 320);
-    change_size_->setMaximumSize(480, 320);
+    change_size_->showFullScreen();
     change_size_->is_this_will_be_random_game = true;
-    this->close();
-    change_size_->setModal(true);
-    change_size_->exec();
 }
 
 void MainWindow::open_prep_window()
 {
-    /*if(!this->is_password_true)   //TODO УБРАТЬ КОММЕНТЫ ТУТ, СЕЙЧАС ЭТО ПРОСТО ДЛЯ ОБЛЕГЧЕНИЯ ОТЛАДКИ КОДА
-        return;*/
+    if(!this->is_password_true)   //TODO УБРАТЬ КОММЕНТЫ ТУТ, СЕЙЧАС ЭТО ПРОСТО ДЛЯ ОБЛЕГЧЕНИЯ ОТЛАДКИ КОДА
+        return;
 
     auto change_size_ = new change_size(this);
-    change_size_->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint);
     change_size_->setWindowTitle("Выберете размер карты");
-    change_size_->setMinimumSize(480, 320);
-    change_size_->setMaximumSize(480, 320);
+    change_size_->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::Tool);
+    change_size_->showFullScreen();
     change_size_->is_this_will_be_prep_game = true;
-    this->close();
-    change_size_->setModal(true);
-    change_size_->exec();
 }
 
 void MainWindow::open_con_window()
@@ -195,24 +192,23 @@ void MainWindow::open_con_window()
     auto con_game_ = new con_game(this, weight - 2, height - 2, full_fname);
     con_game_->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);
     con_game_->setWindowTitle("Режим с конфигурацией");
-    con_game_->showMaximized();
-    //this->close();
-    con_game_->setModal(true);
-    con_game_->exec();
+    con_game_->showFullScreen();
 }
 
 void MainWindow::open_constr_window()
 {
-    /*if(!this->is_password_true)
-        return;*/
+    if(!this->is_password_true)
+        return;
 
     auto change_size_ = new change_size(this);
     change_size_->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint);
     change_size_->setWindowTitle("Выберете размер карты");
-    change_size_->setMinimumSize(480, 320);
-    change_size_->setMaximumSize(480, 320);
+    change_size_->showFullScreen();
     change_size_->is_this_will_be_god_game = true;
-    this->close();
-    change_size_->setModal(true);
-    change_size_->exec();
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_Escape)
+        this->close();
 }

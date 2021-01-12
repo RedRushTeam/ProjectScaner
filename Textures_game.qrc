@@ -15,5 +15,8 @@
         <file>new/random_game_textures/table_pro_128x256.png</file>
         <file>new/random_game_textures/white_chair_128x128.png</file>
         <file>new/random_game_textures/wood_chair_128x128.png</file>
+        <file>new/random_game_textures/proekt.png</file>
+        <file>new/random_game_textures/bashenki.png</file>
+        <file>new/random_game_textures/yakarta.png</file>
     </qresource>
 </RCC>
