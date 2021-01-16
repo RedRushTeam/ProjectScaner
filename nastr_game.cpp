@@ -694,9 +694,9 @@ void nastr_game::start_game()
 
 }
 
-void nastr_game::mousePressEvent(QMouseEvent *event)        //todo удаление объекта целиком при коллизии
+void nastr_game::mousePressEvent(QMouseEvent *event)
 {
-    if(event->button() == Qt::RightButton){
+    if(event->button() == Qt::RightButton){ //поворот текстуры по ПКМ
         auto temp = make_pair(this->view->mapToScene(event->windowPos().x(), event->windowPos().y()).x(), this->view->mapToScene(event->windowPos().x(), event->windowPos().y()).y());   //i dont now how it working, but it working!
         temp = make_pair(trunc(temp.second / 128), trunc(temp.first / 128));    //нормализованная координата
         temp = make_pair(temp.first - 1, temp.second - 1);     //нормализованная координата для написанного мной костыля
@@ -704,14 +704,149 @@ void nastr_game::mousePressEvent(QMouseEvent *event)        //todo удален�
         if(temp.first <= -1 || (temp.second <= -1) || (temp.first >= this->weight_of_map) || (temp.second >= this->height_of_map))
             return;
 
+        auto tmp_texture = this->vec_of_concr_texture[temp.first + 1][temp.second + 1];
+
 //enum type_of_texture{empty__, white_chair_, divan_big_, simpe_divan_, pro_table_, wood_chair_128x128_, pol_128x128_, Bricks_H_, tableH_, red_square_, Bricks_V_, GG__};
-        if(this->vec_of_concr_texture[temp.first + 1][temp.second + 1] == empty__ ||
-                (this->vec_of_concr_texture[temp.first + 1][temp.second + 1] == GG__) ||
-                (this->vec_of_concr_texture[temp.first + 1][temp.second + 1] == pol_128x128_) ||
-                (this->vec_of_concr_texture[temp.first + 1][temp.second + 1] == divan_big_) ||
-                (this->vec_of_concr_texture[temp.first + 1][temp.second + 1] == simpe_divan_) ||
-                (this->vec_of_concr_texture[temp.first + 1][temp.second + 1] == pro_table_) ||
-                (this->vec_of_concr_texture[temp.first + 1][temp.second + 1] == tableH_))
+        switch (tmp_texture) {
+        case empty__:
+            return;
+            break;
+        case GG__:
+            return;
+            break;
+        case pol_128x128_:
+            return;
+            break;
+        case divan_big_:{    //code for 1x3 texture
+            auto middle_of_texture = make_pair(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().x(), this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().y());
+            middle_of_texture = make_pair(trunc(middle_of_texture.second / 128), trunc(middle_of_texture.first / 128));    //нормализованная координата
+            middle_of_texture = make_pair(middle_of_texture.first - 1, middle_of_texture.second - 1);     //нормализованная координата для написанного мной костыля
+
+            bool is_vertical;
+            //с помощью инкрустированного алмазами костыля определяем, вертикально сейчас стоит текстура, или горизонтально:
+            if(((int)this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->rotation() / 90) % 2 != 0)
+                is_vertical = true;
+            else
+                is_vertical = false;
+
+            if(is_vertical){ //текстурка сейчас вертикально
+                if(this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second] != pol_128x128_ || (this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 2] != pol_128x128_))
+                    return;
+
+                this->vec_of_pixmaps[middle_of_texture.first + 2][middle_of_texture.second + 1] = nullptr;
+                this->vec_of_pixmaps[middle_of_texture.first][middle_of_texture.second + 1] = nullptr;
+                this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second] = this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 2] = this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1];
+
+                this->vec_of_concr_texture[middle_of_texture.first + 2][middle_of_texture.second + 1] = pol_128x128_;
+                this->vec_of_concr_texture[middle_of_texture.first][middle_of_texture.second + 1] = pol_128x128_;
+                this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 2] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
+
+                this->vec_of_soderzimoe[middle_of_texture.first + 2][middle_of_texture.second + 1] = empty_;
+                this->vec_of_soderzimoe[middle_of_texture.first][middle_of_texture.second + 1] = empty_;
+                this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second] = this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 2] = this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 1];
+
+                this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->setRotation(this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->rotation() + 90.);
+            }
+            else{
+                if(this->vec_of_concr_texture[middle_of_texture.first][middle_of_texture.second + 1] != pol_128x128_ || (this->vec_of_concr_texture[middle_of_texture.first + 2][middle_of_texture.second + 1] != pol_128x128_))
+                    return;
+
+                this->vec_of_pixmaps[middle_of_texture.first + 2][middle_of_texture.second + 1] = this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                this->vec_of_pixmaps[middle_of_texture.first][middle_of_texture.second + 1] = this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second] = nullptr;
+                this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 2] = nullptr;
+
+                this->vec_of_concr_texture[middle_of_texture.first + 2][middle_of_texture.second + 1] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                this->vec_of_concr_texture[middle_of_texture.first][middle_of_texture.second + 1] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second] = pol_128x128_;
+                this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 2] = pol_128x128_;
+
+                this->vec_of_soderzimoe[middle_of_texture.first + 2][middle_of_texture.second + 1] = this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                this->vec_of_soderzimoe[middle_of_texture.first][middle_of_texture.second + 1] = this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second] = empty_;
+                this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 2] = empty_;
+
+                this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->setRotation(this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->rotation() + 90.);
+            }
+        }
+            break;
+        case tableH_:{   //code for 1x3 texture
+                    auto middle_of_texture = make_pair(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().x(), this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().y());
+                    middle_of_texture = make_pair(trunc(middle_of_texture.second / 128), trunc(middle_of_texture.first / 128));    //нормализованная координата
+                    middle_of_texture = make_pair(middle_of_texture.first - 1, middle_of_texture.second - 1);     //нормализованная координата для написанного мной костыля
+
+                    bool is_vertical;
+                    //с помощью инкрустированного алмазами костыля определяем, вертикально сейчас стоит текстура, или горизонтально:
+                    if(((int)this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->rotation() / 90) % 2 != 0)
+                        is_vertical = true;
+                    else
+                        is_vertical = false;
+
+                    if(is_vertical){ //текстурка сейчас вертикально
+                        if(this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second] != pol_128x128_ || (this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 2] != pol_128x128_))
+                            return;
+
+                        this->vec_of_pixmaps[middle_of_texture.first + 2][middle_of_texture.second + 1] = nullptr;
+                        this->vec_of_pixmaps[middle_of_texture.first][middle_of_texture.second + 1] = nullptr;
+                        this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second] = this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                        this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 2] = this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1];
+
+                        this->vec_of_concr_texture[middle_of_texture.first + 2][middle_of_texture.second + 1] = pol_128x128_;
+                        this->vec_of_concr_texture[middle_of_texture.first][middle_of_texture.second + 1] = pol_128x128_;
+                        this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                        this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 2] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
+
+                        this->vec_of_soderzimoe[middle_of_texture.first + 2][middle_of_texture.second + 1] = empty_;
+                        this->vec_of_soderzimoe[middle_of_texture.first][middle_of_texture.second + 1] = empty_;
+                        this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second] = this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                        this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 2] = this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 1];
+
+                        this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->setRotation(this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->rotation() + 90.);
+                    }
+                    else{
+                        if(this->vec_of_concr_texture[middle_of_texture.first][middle_of_texture.second + 1] != pol_128x128_ || (this->vec_of_concr_texture[middle_of_texture.first + 2][middle_of_texture.second + 1] != pol_128x128_))
+                            return;
+
+                        this->vec_of_pixmaps[middle_of_texture.first + 2][middle_of_texture.second + 1] = this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                        this->vec_of_pixmaps[middle_of_texture.first][middle_of_texture.second + 1] = this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                        this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second] = nullptr;
+                        this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 2] = nullptr;
+
+                        this->vec_of_concr_texture[middle_of_texture.first + 2][middle_of_texture.second + 1] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                        this->vec_of_concr_texture[middle_of_texture.first][middle_of_texture.second + 1] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                        this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second] = pol_128x128_;
+                        this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 2] = pol_128x128_;
+
+                        this->vec_of_soderzimoe[middle_of_texture.first + 2][middle_of_texture.second + 1] = this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                        this->vec_of_soderzimoe[middle_of_texture.first][middle_of_texture.second + 1] = this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                        this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second] = empty_;
+                        this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 2] = empty_;
+
+                        this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->setRotation(this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->rotation() + 90.);
+                    }
+        }
+            break;
+        /*case empty__:
+            return;
+            break;
+        case empty__:
+            return;
+            break;
+        case empty__:
+            return;
+            break;*/
+        }
+
+        if(tmp_texture == empty__ ||
+                (tmp_texture == GG__) ||
+                (tmp_texture == pol_128x128_) ||
+                (tmp_texture == divan_big_) ||
+                (tmp_texture == simpe_divan_) ||
+                (tmp_texture == pro_table_) ||
+                (tmp_texture == tableH_))
             return;
 
         this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->rotation() + 90.);
