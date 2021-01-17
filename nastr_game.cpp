@@ -829,27 +829,161 @@ void nastr_game::mousePressEvent(QMouseEvent *event)
                     }
         }
             break;
-        /*case empty__:
-            return;
+        case white_chair_:
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->rotation() + 90.);
             break;
-        case empty__:
-            return;
+        case Bricks_H_:
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->rotation() + 90.);
             break;
-        case empty__:
-            return;
-            break;*/
+        case Bricks_V_:
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->rotation() + 90.);
+            break;
+        case wood_chair_128x128_:
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->rotation() + 90.);
+            break;
+        case simpe_divan_:{ //code for 1x2 textures
+            //с помощью инкрустированного алмазами костыля определяем, вертикально сейчас стоит текстура, или горизонтально:
+            double normilized_rotation = (int)(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->rotation()) % 360;
+
+            if(normilized_rotation == 0.){
+                //переносим фокус на левую часть текстуры
+                auto left_of_texture = make_pair(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().x() - 64, this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().y());
+                left_of_texture = make_pair(trunc(left_of_texture.second / 128), trunc(left_of_texture.first / 128));    //нормализованная координата
+                left_of_texture = make_pair(left_of_texture.first - 1, left_of_texture.second - 1);     //нормализованная координата для написанного мной костыля
+
+                if(this->vec_of_concr_texture[left_of_texture.first][left_of_texture.second + 1] != pol_128x128_)
+                    return;
+
+                this->vec_of_pixmaps[left_of_texture.first][left_of_texture.second + 1] = this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1];
+                this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 2] = nullptr;
+
+                this->vec_of_concr_texture[left_of_texture.first][left_of_texture.second + 1] = this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 1];
+                this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 2] = pol_128x128_;
+
+                this->vec_of_soderzimoe[left_of_texture.first][left_of_texture.second + 1] = this->vec_of_soderzimoe[left_of_texture.first + 1][left_of_texture.second + 1];
+                this->vec_of_soderzimoe[left_of_texture.first + 1][left_of_texture.second + 2] = empty_;
+
+                this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setRotation(90.);
+
+                //изм коорд
+                this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setPos(this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->pos().x() - 64., this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->pos().y() - 64.);
+            }
+
+            if(normilized_rotation == 180.){
+                //переносим фокус на левую часть текстуры
+                auto left_of_texture = make_pair(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().x() - 64, this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().y());
+                left_of_texture = make_pair(trunc(left_of_texture.second / 128), trunc(left_of_texture.first / 128));    //нормализованная координата
+                left_of_texture = make_pair(left_of_texture.first - 1, left_of_texture.second - 1);     //нормализованная координата для написанного мной костыля
+
+                this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setRotation(0.);
+            }
+
+            if(normilized_rotation == 90.){
+                //переносим фокус на левую часть текстуры
+                auto left_of_texture = make_pair(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().x(), this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().y() + 64.);
+                left_of_texture = make_pair(trunc(left_of_texture.second / 128), trunc(left_of_texture.first / 128));    //нормализованная координата
+                left_of_texture = make_pair(left_of_texture.first - 1, left_of_texture.second - 1);     //нормализованная координата для написанного мной костыля
+
+                this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setRotation(270.);
+            }
+
+            if(normilized_rotation == 270.){
+                //переносим фокус на левую часть текстуры
+                auto left_of_texture = make_pair(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().x(), this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().y() + 64.);
+                left_of_texture = make_pair(trunc(left_of_texture.second / 128), trunc(left_of_texture.first / 128));    //нормализованная координата
+                left_of_texture = make_pair(left_of_texture.first - 1, left_of_texture.second - 1);     //нормализованная координата для написанного мной костыля
+
+                if(this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 2] != pol_128x128_)
+                    return;
+
+                this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 2] = this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1];
+                this->vec_of_pixmaps[left_of_texture.first][left_of_texture.second + 1] = nullptr;
+
+                this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 2] = this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 1];
+                this->vec_of_concr_texture[left_of_texture.first][left_of_texture.second + 1] = pol_128x128_;
+
+                this->vec_of_soderzimoe[left_of_texture.first + 1][left_of_texture.second + 2] = this->vec_of_soderzimoe[left_of_texture.first + 1][left_of_texture.second + 1];
+                this->vec_of_soderzimoe[left_of_texture.first][left_of_texture.second + 1] = empty_;
+
+                this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setRotation(180.);
+
+                //изм коорд
+                this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setPos(this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->pos().x() + 64., this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->pos().y() + 64.);
+            }
         }
+            break;
+        case pro_table_:{ //code for 1x2 textures
+            //с помощью инкрустированного алмазами костыля определяем, вертикально сейчас стоит текстура, или горизонтально:
+            double normilized_rotation = (int)(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->rotation()) % 360;
 
-        if(tmp_texture == empty__ ||
-                (tmp_texture == GG__) ||
-                (tmp_texture == pol_128x128_) ||
-                (tmp_texture == divan_big_) ||
-                (tmp_texture == simpe_divan_) ||
-                (tmp_texture == pro_table_) ||
-                (tmp_texture == tableH_))
-            return;
+            if(normilized_rotation == 0.){
+                //переносим фокус на левую часть текстуры
+                auto left_of_texture = make_pair(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().x() - 64, this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().y());
+                left_of_texture = make_pair(trunc(left_of_texture.second / 128), trunc(left_of_texture.first / 128));    //нормализованная координата
+                left_of_texture = make_pair(left_of_texture.first - 1, left_of_texture.second - 1);     //нормализованная координата для написанного мной костыля
 
-        this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->rotation() + 90.);
+                if(this->vec_of_concr_texture[left_of_texture.first][left_of_texture.second + 1] != pol_128x128_)
+                    return;
+
+                this->vec_of_pixmaps[left_of_texture.first][left_of_texture.second + 1] = this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1];
+                this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 2] = nullptr;
+
+                this->vec_of_concr_texture[left_of_texture.first][left_of_texture.second + 1] = this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 1];
+                this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 2] = pol_128x128_;
+
+                this->vec_of_soderzimoe[left_of_texture.first][left_of_texture.second + 1] = this->vec_of_soderzimoe[left_of_texture.first + 1][left_of_texture.second + 1];
+                this->vec_of_soderzimoe[left_of_texture.first + 1][left_of_texture.second + 2] = empty_;
+
+                this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setRotation(90.);
+
+                //изм коорд
+                this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setPos(this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->pos().x() - 64., this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->pos().y() - 64.);
+            }
+
+            if(normilized_rotation == 180.){
+                //переносим фокус на левую часть текстуры
+                auto left_of_texture = make_pair(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().x() - 64, this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().y());
+                left_of_texture = make_pair(trunc(left_of_texture.second / 128), trunc(left_of_texture.first / 128));    //нормализованная координата
+                left_of_texture = make_pair(left_of_texture.first - 1, left_of_texture.second - 1);     //нормализованная координата для написанного мной костыля
+
+                this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setRotation(0.);
+            }
+
+            if(normilized_rotation == 90.){
+                //переносим фокус на левую часть текстуры
+                auto left_of_texture = make_pair(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().x(), this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().y() + 64.);
+                left_of_texture = make_pair(trunc(left_of_texture.second / 128), trunc(left_of_texture.first / 128));    //нормализованная координата
+                left_of_texture = make_pair(left_of_texture.first - 1, left_of_texture.second - 1);     //нормализованная координата для написанного мной костыля
+
+                this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setRotation(270.);
+            }
+
+            if(normilized_rotation == 270.){
+                //переносим фокус на левую часть текстуры
+                auto left_of_texture = make_pair(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().x(), this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->pos().y() + 64.);
+                left_of_texture = make_pair(trunc(left_of_texture.second / 128), trunc(left_of_texture.first / 128));    //нормализованная координата
+                left_of_texture = make_pair(left_of_texture.first - 1, left_of_texture.second - 1);     //нормализованная координата для написанного мной костыля
+
+                if(this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 2] != pol_128x128_)
+                    return;
+
+                this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 2] = this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1];
+                this->vec_of_pixmaps[left_of_texture.first][left_of_texture.second + 1] = nullptr;
+
+                this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 2] = this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 1];
+                this->vec_of_concr_texture[left_of_texture.first][left_of_texture.second + 1] = pol_128x128_;
+
+                this->vec_of_soderzimoe[left_of_texture.first + 1][left_of_texture.second + 2] = this->vec_of_soderzimoe[left_of_texture.first + 1][left_of_texture.second + 1];
+                this->vec_of_soderzimoe[left_of_texture.first][left_of_texture.second + 1] = empty_;
+
+                this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setRotation(180.);
+
+                //изм коорд
+                this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setPos(this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->pos().x() + 64., this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->pos().y() + 64.);
+            }
+        }
+            break;
+        }
     }
 
     if(!this->is_game_started_now){
