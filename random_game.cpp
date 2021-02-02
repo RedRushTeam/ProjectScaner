@@ -620,8 +620,6 @@ void randome_game::generate_graphik_perems()
 
 
     //на этом этапе все флуктуации сохранены
-
-    //  todo уменьшение мощности из расстояния
     for(auto obj : vec_of_visible_fluct){
         auto pos_of_flukt_normalized = make_pair(abs(this->_hero->coordinate.first - obj.first.first), abs(this->_hero->coordinate.second - obj.first.second));
         while(pos_of_flukt_normalized.first != 0 || (pos_of_flukt_normalized.second != 0)){
