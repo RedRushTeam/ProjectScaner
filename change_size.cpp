@@ -65,6 +65,16 @@ change_size::change_size(QWidget *parent) : QDialog(parent)
     OK->setFont(font_for_buttons);
     vbox->addWidget(OK, 2, Qt::AlignHCenter);
 
+    /*QPushButton *Exit = new QPushButton("Назад", this);
+    Exit->setMinimumSize(500, 180);
+    Exit->setMaximumSize(600, 240);
+    Exit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    Exit->setStyleSheet("QPushButton {      background-color: rgba(0, 0, 0, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
+    Exit->setCursor(QCursor(Qt::PointingHandCursor));
+    Exit->setFont(font_for_buttons);
+    vbox->addWidget(Exit, 3);
+
+    connect(Exit, &QPushButton::clicked, this, &change_size::Exit_clicked);*/
     connect(OK, &QPushButton::clicked, this, &change_size::OK_clicked);
 }
 
@@ -127,6 +137,11 @@ void change_size::OK_clicked()
         this->close();
         god_game_->exec();
     }
+}
+
+void change_size::Exit_clicked()
+{
+    this->close();
 }
 
 void change_size::keyPressEvent(QKeyEvent *event)

@@ -17,12 +17,12 @@ graphic_window::graphic_window(vector<vector<type_of_item>>* vec_of_soderzimoe, 
     QFont font_for_buttons("Times new roman", 14, QFont::Bold);
     QFont font_for_label("Times new roman", 18, QFont::ExtraBold);
 
-    QLabel *title_mashtab = new QLabel("Навигация по графику");
+    QLabel *title_mashtab = new QLabel("");
     title_mashtab->setFont(font_for_label);
     title_mashtab->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     title_mashtab->setAlignment(Qt::AlignCenter);
 
-    QLabel *title_zoom = new QLabel("Изменение масштаба");
+    /*QLabel *title_zoom = new QLabel("Изменение масштаба");
     title_zoom->setFont(font_for_label);
     title_zoom->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     title_zoom->setAlignment(Qt::AlignCenter);
@@ -31,33 +31,33 @@ graphic_window::graphic_window(vector<vector<type_of_item>>* vec_of_soderzimoe, 
     plus_50_k_masht->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     plus_50_k_masht->setCursor(QCursor(Qt::PointingHandCursor));
     plus_50_k_masht->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
-    plus_50_k_masht->setFont(font_for_buttons);
+    plus_50_k_masht->setFont(font_for_buttons);*/
 
-    QPushButton *zoom_0_9_x = new QPushButton("Отдалить график по оси X");
+    QPushButton *zoom_0_9_x = new QPushButton("- →");
     zoom_0_9_x->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     zoom_0_9_x->setCursor(QCursor(Qt::PointingHandCursor));
     zoom_0_9_x->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
     zoom_0_9_x->setFont(font_for_buttons);
 
-    QPushButton *zoom_1_1_x = new QPushButton("Приблизить график по оси X");
+    QPushButton *zoom_1_1_x = new QPushButton("+ →");
     zoom_1_1_x->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     zoom_1_1_x->setCursor(QCursor(Qt::PointingHandCursor));
     zoom_1_1_x->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
     zoom_1_1_x->setFont(font_for_buttons);
 
-    QPushButton *zoom_1_1_y = new QPushButton("Приблизить график по оси Y");
+    QPushButton *zoom_1_1_y = new QPushButton("+ ↑");
     zoom_1_1_y->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     zoom_1_1_y->setCursor(QCursor(Qt::PointingHandCursor));
     zoom_1_1_y->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
     zoom_1_1_y->setFont(font_for_buttons);
 
-    QPushButton *zoom_0_9_y = new QPushButton("Отдалить график по оси Y");
+    QPushButton *zoom_0_9_y = new QPushButton("- ↑");
     zoom_0_9_y->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     zoom_0_9_y->setCursor(QCursor(Qt::PointingHandCursor));
     zoom_0_9_y->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
     zoom_0_9_y->setFont(font_for_buttons);
 
-    QPushButton *minus_50_k_masht = new QPushButton("-50 МГц к масштабу");
+    /*QPushButton *minus_50_k_masht = new QPushButton("-50 МГц к масштабу");
     minus_50_k_masht->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     minus_50_k_masht->setCursor(QCursor(Qt::PointingHandCursor));
     minus_50_k_masht->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
@@ -73,7 +73,7 @@ graphic_window::graphic_window(vector<vector<type_of_item>>* vec_of_soderzimoe, 
     plus_100_k_masht->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     plus_100_k_masht->setCursor(QCursor(Qt::PointingHandCursor));
     plus_100_k_masht->setStyleSheet("QPushButton {     background-color: rgba(170, 85, 255, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
-    plus_100_k_masht->setFont(font_for_buttons);
+    plus_100_k_masht->setFont(font_for_buttons);*/
 
     chartView_2th_formanta = new QChartView();
     chartView_2th_formanta->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
@@ -131,7 +131,7 @@ graphic_window::graphic_window(vector<vector<type_of_item>>* vec_of_soderzimoe, 
 
     this->axisY = new QValueAxis();
     this->axisY->setRange(0., 60.);
-    _now_range_2th_command_y = make_pair(0., 20.);
+    _now_range_2th_command_y = make_pair(0., 60.);
     chart_2th_formanta->addAxis(this->axisY, Qt::AlignLeft);
     series_2th_formanta->attachAxis(this->axisY);
 
@@ -140,26 +140,36 @@ graphic_window::graphic_window(vector<vector<type_of_item>>* vec_of_soderzimoe, 
 
     this->chartView_2th_formanta->chart()->update();
 
-    grid->addWidget(chartView_2th_formanta, 0, 0, 8, 8);
+    //title_mashtab->setScaledContents(true);
+    QPixmap* title_pixmap = new QPixmap();
+    title_pixmap->load(":/new/random_game_textures/new/random_game_textures/lupa.png");
+    title_mashtab->setPixmap(*title_pixmap);
+    title_mashtab->resize(title_pixmap->size());
+
+    //grid->setMargin(0);
+    grid->addWidget(zoom_0_9_y, 9, 0, 1, 2);
+    grid->addWidget(zoom_1_1_y, 9, 2, 1, 2);
+    grid->addWidget(title_mashtab, 9, 4, 1, 1);
+    grid->addWidget(chartView_2th_formanta, 0, 0, 9, 9);
     //grid->addWidget(chartView_3th_formanta, 0, 1, 5, 5);
 
-    grid->addWidget(title_mashtab, 9, 0, 1, 4);
+    /*grid->addWidget(title_mashtab, 9, 0, 1, 4);
     grid->addWidget(plus_50_k_masht, 10, 0, 1, 2);
     grid->addWidget(minus_50_k_masht, 10, 2, 1, 2);
     grid->addWidget(plus_100_k_masht, 11, 0, 1, 2);
-    grid->addWidget(minus_100_k_masht, 11, 2, 1, 2);
+    grid->addWidget(minus_100_k_masht, 11, 2, 1, 2);*/
 
-    grid->addWidget(title_zoom, 9, 4, 1, 4);
-    grid->addWidget(zoom_0_9_x, 10, 4, 2, 1);
-    grid->addWidget(zoom_1_1_x, 10, 5, 2, 1);
-    grid->addWidget(zoom_0_9_y, 10, 6, 2, 1);
-    grid->addWidget(zoom_1_1_y, 10, 7, 2, 1);
+    //grid->addWidget(title_zoom, 9, 4, 1, 4);
+    grid->addWidget(zoom_0_9_x, 9, 5, 1, 2);
+    grid->addWidget(zoom_1_1_x, 9, 7, 1, 2);
+    //grid->addWidget(zoom_0_9_y, 10, 6, 2, 1);
+    //grid->addWidget(zoom_1_1_y, 10, 7, 2, 1);
 
 
-    connect(plus_50_k_masht, &QPushButton::clicked, this, &graphic_window::_50mgz_plused);
+    /*connect(plus_50_k_masht, &QPushButton::clicked, this, &graphic_window::_50mgz_plused);
     connect(minus_50_k_masht, &QPushButton::clicked, this, &graphic_window::_50mgz_minused);
     connect(plus_100_k_masht, &QPushButton::clicked, this, &graphic_window::_100mgz_plused);
-    connect(minus_100_k_masht, &QPushButton::clicked, this, &graphic_window::_100mgz_minused);
+    connect(minus_100_k_masht, &QPushButton::clicked, this, &graphic_window::_100mgz_minused);*/
 
     connect(zoom_0_9_x, &QPushButton::clicked, this, &graphic_window::zoom_0_9_x_clicked);
     connect(zoom_1_1_x, &QPushButton::clicked, this, &graphic_window::zoom_1_1_x_clicked);
@@ -337,6 +347,10 @@ void graphic_window::zoom_1_1_x_clicked()
         return;
 
     int now_size_of_range = this->_now_range_2th_command.second - this->_now_range_2th_command.first;
+
+    if(this->_now_range_2th_command.second - this->_now_range_2th_command.first + now_size_of_range * 0.98 < 51)
+        return;
+
     this->_now_range_2th_command.second = this->_now_range_2th_command.first + now_size_of_range * 0.98;
 
     axisX->clear();
@@ -376,4 +390,17 @@ void graphic_window::zoom_1_1_y_clicked()
 
     this->axisY->setRange(0., _now_range_2th_command_y.second * 0.95);
     _now_range_2th_command_y = make_pair(0., _now_range_2th_command_y.second * 0.95);
+}
+
+void graphic_window::wheelEvent(QWheelEvent *e)
+{
+    static int shit = 0;
+    ++shit;
+    if((shit % 2 == 1))
+        return;
+    if(e->delta() > 0)
+        this->_50mgz_plused();
+    else
+        this->_50mgz_minused();
+
 }

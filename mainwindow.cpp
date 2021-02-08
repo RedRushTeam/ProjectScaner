@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     vbox = new QVBoxLayout(this);
 
-    vbox->setContentsMargins(100, 15, 100, 200);
+    vbox->setContentsMargins(100, 15, 100, 50);
     vbox->setSpacing(20);
 
     QFont font_for_buttons("Times new roman", 14, QFont::Bold);
@@ -80,6 +80,37 @@ MainWindow::MainWindow(QWidget *parent)
     exit_->setStyleSheet("QPushButton {      background-color: rgba(0, 0, 0, 100);     border-style: outset;     border-width: 2px;	border-radius: 10px;     border-color: rgb(85, 0, 127);     min-width: 10em;     padding:12px;} QPushButton:hover {     background-color:rgba(170, 0, 0, 100);     border-style: outset;     border-width: 2px;     border-radius: 10px;     font: bold 26px;     min-width: 10em;     padding: 6px}");
     exit_->setFont(font_for_buttons);
     vbox->addWidget(exit_);
+
+    std::mt19937* gen = new std::mt19937(time(NULL));
+    std::uniform_int_distribution<> uid(1, 5);
+    int rint = uid(*gen);
+
+    QFont font_for_QTextBrowser("Times new roman", 24, QFont::ExtraBold);
+    QTextBrowser* tips = new QTextBrowser(this);
+    tips->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    tips->setStyleSheet("QTextBrowser {min-width: 10em;     padding:12px;}");
+    tips->setFont(font_for_QTextBrowser);
+    tips->setFocus();
+    tips->setFontItalic(true);
+    tips->append("Совет дня: \n");
+    switch (rint) {
+    case 1:
+        tips->append("Закладки могут быть не только в мебели, но и в стенах!");
+        break;
+    case 2:
+        tips->append("Активные полупроводники находятся на частоте от 800, до 1200Мгц!");
+        break;
+    case 3:
+        tips->append("Bluetooth находится на частоте от 2400, до 2500Мгц!");
+        break;
+    case 4:
+        tips->append("Ничего не получается? Загляните во вкладку \"Помощь\"");
+        break;
+    case 5:
+        tips->append("Видишь сигнал? И я не вижу, а он есть.");
+        break;
+    }
+    vbox->addWidget(tips);
 
     connect(exit_, &QPushButton::clicked, qApp, &QApplication::quit);
     connect(help_, &QPushButton::clicked, this, &MainWindow::open_help_window);

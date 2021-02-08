@@ -900,7 +900,7 @@ void randome_game::keyPressEvent(QKeyEvent *event)
                     this->close();
                     return;
                 }
-                QMessageBox::warning(this, "Мимо!", "У вас осталось " + QString::number(this->col_vo_popytok) + " попыток!");
+                QMessageBox::warning(this, "Мимо!", "Число оставшихся попыток: " + QString::number(this->col_vo_popytok));
             }
         }
     }

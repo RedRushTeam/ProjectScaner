@@ -26,6 +26,7 @@ public:
     vector<pair<float, float>>* vec_of_graphik_of_second_formanta;
     vector<pair<float, float>>* vec_of_graphik_of_third_formanta;
     void keyPressEvent(QKeyEvent *event);
+    void wheelEvent(QWheelEvent *e);
 
 private slots:
     void _50mgz_plused();

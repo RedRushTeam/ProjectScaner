@@ -24,6 +24,7 @@ public:
 
 private slots:
     void OK_clicked();
+    void Exit_clicked();
 
 private:
     void keyPressEvent(QKeyEvent *event);

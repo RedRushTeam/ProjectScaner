@@ -19,5 +19,6 @@
         <file>new/random_game_textures/bashenki.png</file>
         <file>new/random_game_textures/yakarta.png</file>
         <file>new/random_game_textures/Example.png</file>
+        <file>new/random_game_textures/lupa.png</file>
     </qresource>
 </RCC>
