@@ -135,7 +135,7 @@ void MainWindow::open_help_window() const
     help* _help_window = new help();
     _help_window->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);
     _help_window->setWindowTitle("Помощь");
-    _help_window->setMinimumSize(720, 420);
+    _help_window->setMinimumSize(480, 320);
     _help_window->show();
 }
 

@@ -22,6 +22,7 @@ private:
     QString full_fname;
 
     vector<vector<type_of_texture>> vec_of_concr_texture;
+    vector<vector<double>> vec_of_concr_angles;
 
 };
 

@@ -27,8 +27,10 @@ prepod_game::prepod_game(QWidget *parent, int weight, int height) : randome_game
 
 void prepod_game::ok_pushed()
 {
-    if(this->_coordinate_of_zakladka == make_pair(-1, -1))
+    if(this->_coordinate_of_zakladka == make_pair(-1, -1)){
         QMessageBox::warning(this, "Внимание", "Для начала выберете непустую клетку!");
+        return;
+    }
     else{
         this->hbox->removeWidget(this->start_with_rand);
         this->start_with_rand->hide();
@@ -121,6 +123,13 @@ void prepod_game::keyPressEvent(QKeyEvent *event)
         if(event->key() == Qt::Key_W || event->key() == 0x0426){
              if(this->vec_of_soderzimoe[this->_hero->coordinate.first - 1][this->_hero->coordinate.second] == empty_){
 
+                 if(this->_hero->_orientation_of_hero != orientation_of_hero::up_){ //поворот текстуры на месте, если она направлена в другую сторону
+                     this->_hero->setRotation(180.);
+                     this->_hero->_orientation_of_hero = orientation_of_hero::up_;
+                     this->_hero->update();
+                     return;
+                 }
+
                  this->vec_of_soderzimoe[this->_hero->coordinate.first - 1][this->_hero->coordinate.second] = GG_;
                  this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
                  this->_hero->coordinate = make_pair(this->_hero->coordinate.first - 1, this->_hero->coordinate.second);
@@ -145,6 +154,15 @@ void prepod_game::keyPressEvent(QKeyEvent *event)
 
         if(event->key() == Qt::Key_A || event->key() == 0x0424){
             if(this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second - 1] == empty_){
+
+                if(this->_hero->_orientation_of_hero != orientation_of_hero::left_){
+                    this->_hero->setRotation(90.);
+                    this->_hero->update();
+                    this->_hero->_orientation_of_hero = orientation_of_hero::left_;
+                    return;
+                }
+
+
                 this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second - 1] = GG_;
                 this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
                 this->_hero->coordinate = make_pair(this->_hero->coordinate.first, this->_hero->coordinate.second - 1);
@@ -169,6 +187,16 @@ void prepod_game::keyPressEvent(QKeyEvent *event)
 
         if(event->key() == Qt::Key_S || event->key() == 0x042b){
             if(this->vec_of_soderzimoe[this->_hero->coordinate.first + 1][this->_hero->coordinate.second] == empty_){
+
+                //texture swaping without move
+                if(this->_hero->_orientation_of_hero != orientation_of_hero::down_){
+                    this->_hero->setRotation(0.);
+                    this->_hero->update();
+                    this->_hero->_orientation_of_hero = orientation_of_hero::down_;
+                    return;
+                }
+
+
                 this->vec_of_soderzimoe[this->_hero->coordinate.first + 1][this->_hero->coordinate.second] = GG_;
                 this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
                 this->_hero->coordinate = make_pair(this->_hero->coordinate.first + 1, this->_hero->coordinate.second);
@@ -193,6 +221,15 @@ void prepod_game::keyPressEvent(QKeyEvent *event)
 
         if(event->key() == Qt::Key_D || event->key() == 0x0412){
             if(this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second + 1] == empty_){
+
+                //texture swaping without move
+                if(this->_hero->_orientation_of_hero != orientation_of_hero::right_){
+                    this->_hero->setRotation(270.);
+                    this->_hero->update();
+                    this->_hero->_orientation_of_hero = orientation_of_hero::right_;
+                    return;
+                }
+
                 this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second + 1] = GG_;
                 this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
                 this->_hero->coordinate = make_pair(this->_hero->coordinate.first, this->_hero->coordinate.second + 1);
@@ -242,10 +279,7 @@ void prepod_game::keyPressEvent(QKeyEvent *event)
             auto graphik_window = new graphic_window(&(this->vec_of_soderzimoe), &(this->vec_of_fluct), this->vec_of_graphik_of_second_formanta, this->vec_of_graphik_of_trird_formanta, this);
             graphik_window->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);
             graphik_window->setWindowTitle("Просмотр графика");
-            graphik_window->showMaximized();
-            graphik_window->setModal(true);
-            //this->close();
-            graphik_window->exec();
+            graphik_window->showFullScreen();
         }
     }
 }

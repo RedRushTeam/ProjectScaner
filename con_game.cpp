@@ -7,6 +7,10 @@ con_game::con_game(QWidget *parent, int weight, int height, QString full_fname) 
     for(int i = 0; i < this->vec_of_soderzimoe.size(); ++i)
         this->vec_of_concr_texture[i].resize(this->weight_of_map + 2);
 
+    this->vec_of_concr_angles.resize(this->height_of_map + 2);
+    for(int i = 0; i < this->vec_of_concr_angles.size(); ++i)
+        this->vec_of_concr_angles[i].resize(this->weight_of_map + 2, NULL);
+
     this->download();
 
     for(int i = 0; i < this->vec_of_fluct.size(); ++i)
@@ -88,8 +92,10 @@ void con_game::download()
             }
             ++j1;
 
-            this->vec_of_concr_texture[i1][j1] = type_of_texture(stoi(now_line.substr(1, now_line.find("]"))));
+            this->vec_of_concr_texture[i1][j1] = type_of_texture(stoi(now_line.substr(1, now_line.find(","))));
             //this->vec_of_soderzimoe[i][j] = type_of_item(stoi(now_line.substr(1, now_line.find("]"))));
+            now_line = now_line.substr(now_line.find(",") + 1, now_line.size());
+            this->vec_of_concr_angles[i1][j1] = double(stoi(now_line.substr(0, now_line.find(","))));
             now_line = now_line.substr(now_line.find("]") + 1, now_line.size());
         }
     }
@@ -113,6 +119,7 @@ void con_game::download()
             return;*/
 
         this->vec_of_pixmaps[temp.first + 1][temp.second + 1] = Pix_;
+        this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_concr_angles[i][j]);
         this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] = neprohod_object_;
         Pix_->setOffset(-QPix_->width()/2, -QPix_->height()/2);
         Pix_->setPos(128. * temp.second + 192., 192. + 128 * temp.first);
@@ -136,15 +143,34 @@ void con_game::download()
             return;*/
 
         is_las_texture_was_be_3x = true;
+        bool is_vertical;
+        if(((int)this->vec_of_concr_angles[i][j] / 90) % 2 != 0)
+            is_vertical = true;
+        else
+            is_vertical = false;
 
-        this->vec_of_soderzimoe[temp.first + 1][temp.second] = neprohod_object_;
-        this->vec_of_soderzimoe[temp.first + 1][temp.second + 2] = neprohod_object_;
-        this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] = neprohod_object_;
-        this->vec_of_pixmaps[temp.first + 1][temp.second] = Pix_;
-        this->vec_of_pixmaps[temp.first + 1][temp.second + 2] = Pix_;
-        this->vec_of_pixmaps[temp.first + 1][temp.second + 1] = Pix_;
-        Pix_->setOffset(-QPix_->width()/2, -QPix_->height()/2);
-        Pix_->setPos(128. * temp.second + 192., 192. + 128 * temp.first);
+        if(is_vertical){
+            this->vec_of_soderzimoe[temp.first][temp.second + 1] = neprohod_object_;
+            this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] = neprohod_object_;
+            this->vec_of_soderzimoe[temp.first + 2][temp.second + 1] = neprohod_object_;
+            this->vec_of_pixmaps[temp.first][temp.second + 1] = Pix_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1] = Pix_;
+            this->vec_of_pixmaps[temp.first + 2][temp.second + 1] = Pix_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_concr_angles[i][j]);
+            Pix_->setOffset(-QPix_->width()/2, -QPix_->height()/2);
+            Pix_->setPos(128. * temp.second + 192., 192. + 128 * temp.first);
+        }
+        else{
+            this->vec_of_soderzimoe[temp.first + 1][temp.second] = neprohod_object_;
+            this->vec_of_soderzimoe[temp.first + 1][temp.second + 2] = neprohod_object_;
+            this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] = neprohod_object_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second] = Pix_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 2] = Pix_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1] = Pix_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_concr_angles[i][j]);
+            Pix_->setOffset(-QPix_->width()/2, -QPix_->height()/2);
+            Pix_->setPos(128. * temp.second + 192., 192. + 128 * temp.first);
+        }
         scene->addItem(Pix_);
     }
         break;
@@ -163,13 +189,32 @@ void con_game::download()
             return;*/
 
         is_las_texture_was_be_3x = true;
+        bool is_vertical;
+        if(((int)this->vec_of_concr_angles[i][j] / 90) % 2 != 0)
+            is_vertical = true;
+        else
+            is_vertical = false;
 
-        this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] = neprohod_object_;
-        this->vec_of_soderzimoe[temp.first + 1][temp.second + 2] = neprohod_object_;
-        this->vec_of_pixmaps[temp.first + 1][temp.second + 1] = Pix_;
-        this->vec_of_pixmaps[temp.first + 1][temp.second + 2] = Pix_;
-        Pix_->setOffset(-QPix_->width()/2, -QPix_->height()/2);
-        Pix_->setPos(128. * temp.second + 256., 192. + 128 * temp.first);
+        if(is_vertical){
+            this->vec_of_soderzimoe[temp.first][temp.second + 1] = neprohod_object_;
+            this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] = neprohod_object_;
+            this->vec_of_pixmaps[temp.first][temp.second + 1] = Pix_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1] = Pix_;
+
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_concr_angles[i][j]);
+            Pix_->setOffset(-QPix_->width()/2, -QPix_->height()/2);
+            Pix_->setPos(128. * temp.second + 192., 128. + 128 * temp.first);
+        }
+        else{
+            this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] = neprohod_object_;
+            this->vec_of_soderzimoe[temp.first + 1][temp.second + 2] = neprohod_object_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1] = Pix_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 2] = Pix_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_concr_angles[i][j]);
+            Pix_->setOffset(-QPix_->width()/2, -QPix_->height()/2);
+            Pix_->setPos(128. * temp.second + 256., 192. + 128 * temp.first);
+        }
+
         scene->addItem(Pix_);
     }
         break;
@@ -189,12 +234,31 @@ void con_game::download()
 
         is_las_texture_was_be_3x = true;
 
-        this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] = neprohod_object_;
-        this->vec_of_soderzimoe[temp.first + 1][temp.second + 2] = neprohod_object_;
-        this->vec_of_pixmaps[temp.first + 1][temp.second + 1] = Pix_;
-        this->vec_of_pixmaps[temp.first + 1][temp.second + 2] = Pix_;
-        Pix_->setOffset(-QPix_->width()/2, -QPix_->height()/2);
-        Pix_->setPos(128. * temp.second + 256., 192. + 128 * temp.first);
+        bool is_vertical;
+        if(((int)this->vec_of_concr_angles[i][j] / 90) % 2 != 0)
+            is_vertical = true;
+        else
+            is_vertical = false;
+
+        if(is_vertical){
+            this->vec_of_soderzimoe[temp.first][temp.second + 1] = neprohod_object_;
+            this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] = neprohod_object_;
+            this->vec_of_pixmaps[temp.first][temp.second + 1] = Pix_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1] = Pix_;
+
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_concr_angles[i][j]);
+            Pix_->setOffset(-QPix_->width()/2, -QPix_->height()/2);
+            Pix_->setPos(128. * temp.second + 192., 128. + 128 * temp.first);
+        }
+        else{
+            this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] = neprohod_object_;
+            this->vec_of_soderzimoe[temp.first + 1][temp.second + 2] = neprohod_object_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1] = Pix_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 2] = Pix_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_concr_angles[i][j]);
+            Pix_->setOffset(-QPix_->width()/2, -QPix_->height()/2);
+            Pix_->setPos(128. * temp.second + 256., 192. + 128 * temp.first);
+        }
         scene->addItem(Pix_);
     }
         break;
@@ -211,6 +275,7 @@ void con_game::download()
             return;*/
 
         this->vec_of_pixmaps[temp.first + 1][temp.second + 1] = Pix_;
+        this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_concr_angles[i][j]);
         this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] = neprohod_object_;
         Pix_->setOffset(-QPix_->width()/2, -QPix_->height()/2);
         Pix_->setPos(128. * temp.second + 192., 192. + 128 * temp.first);
@@ -224,6 +289,9 @@ void con_game::download()
             is_las_texture_was_be_3x = !is_las_texture_was_be_3x;
             break;;
         }
+
+        if(this->vec_of_pixmaps[temp.first + 1][temp.second + 1] != nullptr)
+            break;
 
         QPixmap* QPix_ = new QPixmap();
         QPix_->load(":/new/random_game_textures/228.1.jpg");
@@ -255,6 +323,7 @@ void con_game::download()
             return;*/
 
         this->vec_of_pixmaps[temp.first + 1][temp.second + 1] = Pix_;
+        this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_concr_angles[i][j]);
         this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] = neprohod_object_;
         Pix_->setOffset(-QPix_->width()/2, -QPix_->height()/2);
         Pix_->setPos(128. * temp.second + 192., 192. + 128 * temp.first);
@@ -276,17 +345,34 @@ void con_game::download()
 
         is_las_texture_was_be_3x = true;
 
-        /*if(this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] != empty_ || (this->vec_of_soderzimoe[temp.first + 1][temp.second] != empty_) || (this->vec_of_soderzimoe[temp.first + 1][temp.second + 2] != empty_))
-            return;*/
+        bool is_vertical;
+        if(((int)this->vec_of_concr_angles[i][j] / 90) % 2 != 0)
+            is_vertical = true;
+        else
+            is_vertical = false;
 
-        this->vec_of_soderzimoe[temp.first + 1][temp.second] = neprohod_object_;
-        this->vec_of_soderzimoe[temp.first + 1][temp.second + 2] = neprohod_object_;
-        this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] = neprohod_object_;
-        this->vec_of_pixmaps[temp.first + 1][temp.second] = Pix_;
-        this->vec_of_pixmaps[temp.first + 1][temp.second + 2] = Pix_;
-        this->vec_of_pixmaps[temp.first + 1][temp.second + 1] = Pix_;
-        Pix_->setOffset(-QPix_->width()/2, -QPix_->height()/2);
-        Pix_->setPos(128. * temp.second + 192., 192. + 128 * temp.first);
+        if(is_vertical){
+            this->vec_of_soderzimoe[temp.first][temp.second + 1] = neprohod_object_;
+            this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] = neprohod_object_;
+            this->vec_of_soderzimoe[temp.first + 2][temp.second + 1] = neprohod_object_;
+            this->vec_of_pixmaps[temp.first][temp.second + 1] = Pix_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1] = Pix_;
+            this->vec_of_pixmaps[temp.first + 2][temp.second + 1] = Pix_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_concr_angles[i][j]);
+            Pix_->setOffset(-QPix_->width()/2, -QPix_->height()/2);
+            Pix_->setPos(128. * temp.second + 192., 192. + 128 * temp.first);
+        }
+        else{
+            this->vec_of_soderzimoe[temp.first + 1][temp.second] = neprohod_object_;
+            this->vec_of_soderzimoe[temp.first + 1][temp.second + 2] = neprohod_object_;
+            this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] = neprohod_object_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second] = Pix_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 2] = Pix_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1] = Pix_;
+            this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_concr_angles[i][j]);
+            Pix_->setOffset(-QPix_->width()/2, -QPix_->height()/2);
+            Pix_->setPos(128. * temp.second + 192., 192. + 128 * temp.first);
+        }
         scene->addItem(Pix_);
     }
         break;
@@ -300,6 +386,7 @@ void con_game::download()
             break;
 
         this->vec_of_pixmaps[temp.first + 1][temp.second + 1] = Pix_;
+        this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_concr_angles[i][j]);
         this->vec_of_soderzimoe[temp.first + 1][temp.second + 1] = neprohod_object_;
         Pix_->setOffset(-QPix_->width()/2, -QPix_->height()/2);
         Pix_->setPos(128. * temp.second + 192., 192. + 128 * temp.first);

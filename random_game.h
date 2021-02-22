@@ -135,6 +135,7 @@ public:
     void keyReleaseEvent(QKeyEvent *event);
     void move_hero();
     void start_animation_and_move_hero();
+    //bool eventFilter(QObject *obj, QEvent *event);
 
     Hero* _hero;
     int height_of_map;
@@ -142,7 +143,7 @@ public:
     int col_vo_popytok = 3;
     pair<int, int> _vibrannaya_kletka = make_pair(-1, -1);
     Pixmap* _pix_chaged_cell = nullptr;
-    pair<int, int> _coordinate_of_zakladka;
+    pair<int, int> _coordinate_of_zakladka = make_pair(-1, -1);
     QTimer* _timer;
     bool is_move_possible = true;
     int start;

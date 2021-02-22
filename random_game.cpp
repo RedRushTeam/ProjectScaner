@@ -1,4 +1,4 @@
-#include "random_game.h"
+ #include "random_game.h"
 #include "ui_random_game.h"
 
 randome_game::randome_game(QWidget *parent, int weight, int height) :
@@ -53,6 +53,9 @@ randome_game::randome_game(QWidget *parent, int weight, int height) :
     this->add_hero();
     this->add_zakladka();
     this->generate_flukt();
+    //this->scene->installEventFilter(this);
+    //this->installEventFilter(this);
+    //this->setFocus();
     //this->generate_graphik_perems();
 }
 
@@ -103,7 +106,7 @@ void randome_game::generate_map()
     //allocated memory for vec
     this->vec_of_pixmaps.resize(this->height_of_map + 2);
     for(int i = 0; i < this->vec_of_pixmaps.size(); ++i)
-        this->vec_of_pixmaps[i].resize(this->weight_of_map + 2);
+        this->vec_of_pixmaps[i].resize(this->weight_of_map + 2, nullptr);
 
     //allocated memory for vec
     this->vec_of_fluct.resize(this->height_of_map + 2);
@@ -410,12 +413,40 @@ void randome_game::generate_graphik_perems()
 
     vector<pair<pair<int, int>, pair<type_of_fluctuation, float>>> vec_of_visible_fluct;
 
+    //внизу куча закомменченого кода, для диаграммы направленности вида:
 
-    // TODO rewrite this
+    //      *
+    //    ***
+    //  Г****
+    //    ***
+    //      *
+
+    //Незакомменченный код для диаграммы вида:
+
+    //     *
+    //  Г***
+    //     *
     switch (this->_hero->_orientation_of_hero) {
     case left_:        //все ряды влево
 
-        //единственная клетка
+        //ГFF
+        for(int i = 0; i < 2; ++i)
+           if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first, coordinate_of_hero.second - i - 1)))   //клетка допустима
+               if(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second - i - 1].first != no_fluct_){  //в клетке флуктуация
+                   float now_pwr = this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second - i - 1].second;
+                   vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first, coordinate_of_hero.second - i - 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second - i - 1].first, now_pwr))); //флуктуация сохранена
+               }
+        //   F
+        //Г**F
+        //   F
+        for(int i = 0; i < 3; ++i)
+           if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first - 1 + i, coordinate_of_hero.second - 3)))   //клетка допустима
+               if(this->vec_of_fluct[coordinate_of_hero.first - 1 + i][coordinate_of_hero.second - 3].first != no_fluct_){  //в клетке флуктуация
+                   float now_pwr = this->vec_of_fluct[coordinate_of_hero.first - 1 + i][coordinate_of_hero.second - 3].second;
+                   vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first - 1 + i, coordinate_of_hero.second - 3), make_pair(this->vec_of_fluct[coordinate_of_hero.first - 1 + i][coordinate_of_hero.second - 3].first, now_pwr))); //флуктуация сохранена
+               }
+
+        /*//единственная клетка
         if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first, coordinate_of_hero.second - 1)))   //клетка допустима
             if(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second - 1].first != no_fluct_){  //в клетке флуктуация
                 float now_pwr = this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second - 1].second;
@@ -461,11 +492,29 @@ void randome_game::generate_graphik_perems()
                     for(int k = 0; k > 4; ++k)
                         now_pwr = now_pwr * 0.95;
                     vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + (i - 2), coordinate_of_hero.second - 4), make_pair(this->vec_of_fluct[coordinate_of_hero.first + (i - 2)][coordinate_of_hero.second - 4].first, now_pwr))); //флуктуация сохранена
-                }
+                }*/
         break;
     case right_:
         //все ряды вправо
-        //единственная клетка
+
+        //ГFF
+        for(int i = 0; i < 2; ++i)
+           if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first, coordinate_of_hero.second + i + 1)))   //клетка допустима
+               if(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + i + 1].first != no_fluct_){  //в клетке флуктуация
+                   float now_pwr = this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + i + 1].second;
+                   vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first, coordinate_of_hero.second + i + 1), make_pair(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + i + 1].first, now_pwr))); //флуктуация сохранена
+               }
+        //   F
+        //Г**F
+        //   F
+        for(int i = 0; i < 3; ++i)
+           if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first - 1 + i, coordinate_of_hero.second + 3)))   //клетка допустима
+               if(this->vec_of_fluct[coordinate_of_hero.first - 1 + i][coordinate_of_hero.second + 3].first != no_fluct_){  //в клетке флуктуация
+                   float now_pwr = this->vec_of_fluct[coordinate_of_hero.first - 1 + i][coordinate_of_hero.second - 3].second;
+                   vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first - 1 + i, coordinate_of_hero.second + 3), make_pair(this->vec_of_fluct[coordinate_of_hero.first - 1 + i][coordinate_of_hero.second + 3].first, now_pwr))); //флуктуация сохранена
+               }
+
+        /*//единственная клетка
         if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first, coordinate_of_hero.second + 1)))   //клетка допустима
             if(this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + 1].first != no_fluct_){  //в клетке флуктуация
                 float now_pwr = this->vec_of_fluct[coordinate_of_hero.first][coordinate_of_hero.second + 1].second;
@@ -511,11 +560,29 @@ void randome_game::generate_graphik_perems()
                     for(int k = 0; k > 4; ++k)
                         now_pwr = now_pwr * 0.95;
                     vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + (i - 2), coordinate_of_hero.second + 4), make_pair(this->vec_of_fluct[coordinate_of_hero.first + (i - 2)][coordinate_of_hero.second + 4].first, now_pwr))); //флуктуация сохранена
-                }
+                }*/
         break;
     case up_:
         //все ряды вверх
-        //единственная клетка
+
+        //ГFF
+        for(int i = 0; i < 2; ++i)
+           if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first - i - 1, coordinate_of_hero.second)))   //клетка допустима
+               if(this->vec_of_fluct[coordinate_of_hero.first - i - 1][coordinate_of_hero.second].first != no_fluct_){  //в клетке флуктуация
+                   float now_pwr = this->vec_of_fluct[coordinate_of_hero.first - i - 1][coordinate_of_hero.second].second;
+                   vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first - i - 1, coordinate_of_hero.second), make_pair(this->vec_of_fluct[coordinate_of_hero.first - i - 1][coordinate_of_hero.second].first, now_pwr))); //флуктуация сохранена
+               }
+        //   F
+        //Г**F
+        //   F
+        for(int i = 0; i < 3; ++i)
+           if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first - 3, coordinate_of_hero.second - 1 + i)))   //клетка допустима
+               if(this->vec_of_fluct[coordinate_of_hero.first - 3][coordinate_of_hero.second - 1 + i].first != no_fluct_){  //в клетке флуктуация
+                   float now_pwr = this->vec_of_fluct[coordinate_of_hero.first - 3][coordinate_of_hero.second - 1 + i].second;
+                   vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first - 3, coordinate_of_hero.second - 1 + i), make_pair(this->vec_of_fluct[coordinate_of_hero.first - 3][coordinate_of_hero.second - 1 + i].first, now_pwr))); //флуктуация сохранена
+               }
+
+        /*//единственная клетка
         if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first - 1, coordinate_of_hero.second)))   //клетка допустима
             if(this->vec_of_fluct[coordinate_of_hero.first - 1][coordinate_of_hero.second].first != no_fluct_){  //в клетке флуктуация
                 float now_pwr = this->vec_of_fluct[coordinate_of_hero.first - 1][coordinate_of_hero.second].second;
@@ -561,12 +628,30 @@ void randome_game::generate_graphik_perems()
                     for(int k = 0; k > 4; ++k)
                         now_pwr = now_pwr * 0.95;
                     vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first - 4, coordinate_of_hero.second + (i - 2)), make_pair(this->vec_of_fluct[coordinate_of_hero.first - 4][coordinate_of_hero.second + (i - 2)].first, now_pwr))); //флуктуация сохранена
-                }
+                }*/
 
         break;
     case down_:
         //все ряды вниз
-        //единственная клетка
+
+        //ГFF
+        for(int i = 0; i < 2; ++i)
+           if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + i + 1, coordinate_of_hero.second)))   //клетка допустима
+               if(this->vec_of_fluct[coordinate_of_hero.first + i + 1][coordinate_of_hero.second].first != no_fluct_){  //в клетке флуктуация
+                   float now_pwr = this->vec_of_fluct[coordinate_of_hero.first + i + 1][coordinate_of_hero.second].second;
+                   vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + i + 1, coordinate_of_hero.second), make_pair(this->vec_of_fluct[coordinate_of_hero.first + i + 1][coordinate_of_hero.second].first, now_pwr))); //флуктуация сохранена
+               }
+        //   F
+        //Г**F
+        //   F
+        for(int i = 0; i < 3; ++i)
+           if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + 3, coordinate_of_hero.second - 1 + i)))   //клетка допустима
+               if(this->vec_of_fluct[coordinate_of_hero.first + 3][coordinate_of_hero.second - 1 + i].first != no_fluct_){  //в клетке флуктуация
+                   float now_pwr = this->vec_of_fluct[coordinate_of_hero.first + 3][coordinate_of_hero.second - 1 + i].second;
+                   vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + 3, coordinate_of_hero.second - 1 + i), make_pair(this->vec_of_fluct[coordinate_of_hero.first + 3][coordinate_of_hero.second - 1 + i].first, now_pwr))); //флуктуация сохранена
+               }
+
+        /*//единственная клетка
         if(this->is_coordinate_is_normal(make_pair(coordinate_of_hero.first + 1, coordinate_of_hero.second)))   //клетка допустима
             if(this->vec_of_fluct[coordinate_of_hero.first + 1][coordinate_of_hero.second].first != no_fluct_){  //в клетке флуктуация
                 float now_pwr = this->vec_of_fluct[coordinate_of_hero.first + 1][coordinate_of_hero.second].second;
@@ -612,41 +697,38 @@ void randome_game::generate_graphik_perems()
                     for(int k = 0; k > 4; ++k)
                         now_pwr = now_pwr * 0.95;
                     vec_of_visible_fluct.push_back(make_pair(make_pair(coordinate_of_hero.first + 4, coordinate_of_hero.second + (i - 2)), make_pair(this->vec_of_fluct[coordinate_of_hero.first + 4][coordinate_of_hero.second + (i - 2)].first, now_pwr))); //флуктуация сохранена
-                }
+                }*/
         break;
     }
 
-    int b1 = 0;
-
 
     //на этом этапе все флуктуации сохранены
-    for(auto obj : vec_of_visible_fluct){
+    for(auto &obj : vec_of_visible_fluct){
         auto pos_of_flukt_normalized = make_pair(abs(this->_hero->coordinate.first - obj.first.first), abs(this->_hero->coordinate.second - obj.first.second));
         while(pos_of_flukt_normalized.first != 0 || (pos_of_flukt_normalized.second != 0)){
             if(pos_of_flukt_normalized.first > 0 && (pos_of_flukt_normalized.second > 0)){
                 pos_of_flukt_normalized = make_pair(pos_of_flukt_normalized.first - 1, pos_of_flukt_normalized.second - 1); //уменьшение мощности на 10% и понижение всех координат на единицу
-                obj.second = make_pair(obj.second.first, obj.second.second * 0.9);
+                obj.second = make_pair(obj.second.first, obj.second.second * 0.85);
             }
 
             if(pos_of_flukt_normalized.first == 0 && (pos_of_flukt_normalized.second > 0)){
                 pos_of_flukt_normalized = make_pair(pos_of_flukt_normalized.first, pos_of_flukt_normalized.second - 1); //уменьшение мощности на 10% и понижение всех координаты на единицу
-                obj.second = make_pair(obj.second.first, obj.second.second * 0.9);
+                obj.second = make_pair(obj.second.first, obj.second.second * 0.85);
             }
 
             if(pos_of_flukt_normalized.second == 0 && (pos_of_flukt_normalized.first > 0)){
                 pos_of_flukt_normalized = make_pair(pos_of_flukt_normalized.first - 1, pos_of_flukt_normalized.second); //уменьшение мощности на 10% и понижение всех координаты на единицу
-                obj.second = make_pair(obj.second.first, obj.second.second * 0.9);
+                obj.second = make_pair(obj.second.first, obj.second.second * 0.85);
             }
         }
     }
 
     //удаление "Затухших" флуктуаций
-    int counter = 0;
-    while(counter < vec_of_visible_fluct.size())
-        if(vec_of_visible_fluct[counter].second.second < 8)
-            vec_of_fluct.erase(vec_of_fluct.begin() + counter);
+    for(auto i = vec_of_visible_fluct.begin(); i != vec_of_visible_fluct.end();)
+        if((*i).second.second < 8)
+            i = vec_of_visible_fluct.erase(i);
         else
-            ++counter;
+            ++i;
 
     this->vec_of_graphik_of_trird_formanta = new vector<pair<float, float>>(*this->vec_of_graphik_of_second_formanta);
 
@@ -787,6 +869,13 @@ void randome_game::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_W || event->key() == 0x0426){
          if(this->vec_of_soderzimoe[this->_hero->coordinate.first - 1][this->_hero->coordinate.second] == empty_){
 
+             if(this->_hero->_orientation_of_hero != orientation_of_hero::up_){ //поворот текстуры на месте, если она направлена в другую сторону
+                 this->_hero->setRotation(180.);
+                 this->_hero->_orientation_of_hero = orientation_of_hero::up_;
+                 this->_hero->update();
+                 return;
+             }
+
              this->vec_of_soderzimoe[this->_hero->coordinate.first - 1][this->_hero->coordinate.second] = GG_;
              this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
              this->_hero->coordinate = make_pair(this->_hero->coordinate.first - 1, this->_hero->coordinate.second);
@@ -811,6 +900,15 @@ void randome_game::keyPressEvent(QKeyEvent *event)
 
     if(event->key() == Qt::Key_A || event->key() == 0x0424){
         if(this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second - 1] == empty_){
+
+            if(this->_hero->_orientation_of_hero != orientation_of_hero::left_){
+                this->_hero->setRotation(90.);
+                this->_hero->update();
+                this->_hero->_orientation_of_hero = orientation_of_hero::left_;
+                return;
+            }
+
+
             this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second - 1] = GG_;
             this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
             this->_hero->coordinate = make_pair(this->_hero->coordinate.first, this->_hero->coordinate.second - 1);
@@ -835,6 +933,16 @@ void randome_game::keyPressEvent(QKeyEvent *event)
 
     if(event->key() == Qt::Key_S || event->key() == 0x042b){
         if(this->vec_of_soderzimoe[this->_hero->coordinate.first + 1][this->_hero->coordinate.second] == empty_){
+
+            //texture swaping without move
+            if(this->_hero->_orientation_of_hero != orientation_of_hero::down_){
+                this->_hero->setRotation(0.);
+                this->_hero->update();
+                this->_hero->_orientation_of_hero = orientation_of_hero::down_;
+                return;
+            }
+
+
             this->vec_of_soderzimoe[this->_hero->coordinate.first + 1][this->_hero->coordinate.second] = GG_;
             this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
             this->_hero->coordinate = make_pair(this->_hero->coordinate.first + 1, this->_hero->coordinate.second);
@@ -859,6 +967,15 @@ void randome_game::keyPressEvent(QKeyEvent *event)
 
     if(event->key() == Qt::Key_D || event->key() == 0x0412){
         if(this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second + 1] == empty_){
+
+            //texture swaping without move
+            if(this->_hero->_orientation_of_hero != orientation_of_hero::right_){
+                this->_hero->setRotation(270.);
+                this->_hero->update();
+                this->_hero->_orientation_of_hero = orientation_of_hero::right_;
+                return;
+            }
+
             this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second + 1] = GG_;
             this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
             this->_hero->coordinate = make_pair(this->_hero->coordinate.first, this->_hero->coordinate.second + 1);
@@ -913,6 +1030,8 @@ void randome_game::keyPressEvent(QKeyEvent *event)
         graphik_window->setWindowFlags(Qt::Window | Qt::WindowCloseButtonHint | Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint);
         graphik_window->setWindowTitle("Просмотр графика");
         graphik_window->showFullScreen();
+        graphik_window->exec();
+        graphik_window->~graphic_window();
     }
 }
 
@@ -927,7 +1046,7 @@ void randome_game::mousePressEvent(QMouseEvent *mEvent)
     auto temp = make_pair(this->view->mapToScene(mEvent->windowPos().x(), mEvent->windowPos().y()).x(), this->view->mapToScene(mEvent->windowPos().x(), mEvent->windowPos().y()).y());   //i dont now how it working, but it working!
     this->_vibrannaya_kletka = make_pair(floor(temp.second / 128), floor(temp.first / 128));
 
-    if(this->_vibrannaya_kletka.first <= -1 || (this->_vibrannaya_kletka.second <= -1) || (this->_vibrannaya_kletka.first > this->weight_of_map) || (this->_vibrannaya_kletka.second > this->height_of_map))
+    if(this->_vibrannaya_kletka.first <= -1 || (this->_vibrannaya_kletka.second <= -1) || (this->_vibrannaya_kletka.first - 1 > this->weight_of_map) || (this->_vibrannaya_kletka.second - 1 > this->height_of_map))
         return;
 
     if(this->vec_of_soderzimoe[this->_vibrannaya_kletka.first][this->_vibrannaya_kletka.second] == empty_ || (this->vec_of_soderzimoe[this->_vibrannaya_kletka.first][this->_vibrannaya_kletka.second] == GG_)){
@@ -1004,6 +1123,112 @@ void randome_game::start_animation_and_move_hero()
     this->_timer->setInterval(256);
     this->_timer->start();
 }
+
+/*bool randome_game::eventFilter(QObject *obj, QEvent *event)
+{
+    if(event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *ke = static_cast<QKeyEvent*>(event);
+        if(ke->key() == Qt::Key_Left){
+            if(this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second - 1] == empty_){
+                this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second - 1] = GG_;
+                this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
+                this->_hero->coordinate = make_pair(this->_hero->coordinate.first, this->_hero->coordinate.second - 1);
+                //texture swaping
+                if(this->_hero->_orientation_of_hero != orientation_of_hero::left_){
+                    this->_hero->setRotation(90.);
+                    this->_hero->update();
+                    this->_hero->_orientation_of_hero = orientation_of_hero::left_;
+                }
+
+                this->start_animation_and_move_hero();
+            }
+            else{
+                //texture swaping without move
+                if(this->_hero->_orientation_of_hero != orientation_of_hero::left_){
+                    this->_hero->setRotation(90.);
+                    this->_hero->update();
+                    this->_hero->_orientation_of_hero = orientation_of_hero::left_;
+                }
+            }
+        }
+
+        if(ke->key() == Qt::Key_Up){
+            if(this->vec_of_soderzimoe[this->_hero->coordinate.first - 1][this->_hero->coordinate.second] == empty_){
+
+                this->vec_of_soderzimoe[this->_hero->coordinate.first - 1][this->_hero->coordinate.second] = GG_;
+                this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
+                this->_hero->coordinate = make_pair(this->_hero->coordinate.first - 1, this->_hero->coordinate.second);
+                //texture swaping
+                if(this->_hero->_orientation_of_hero != orientation_of_hero::up_){
+                    this->_hero->setRotation(180.);
+                    this->_hero->update();
+                }
+                this->_hero->_orientation_of_hero = orientation_of_hero::up_;
+
+                this->start_animation_and_move_hero();
+            }
+            else{
+                //texture swaping without move
+                if(this->_hero->_orientation_of_hero != orientation_of_hero::up_){
+                    this->_hero->setRotation(180.);
+                    this->_hero->update();
+                }
+                this->_hero->_orientation_of_hero = orientation_of_hero::up_;
+            }
+        }
+
+        if(ke->key() == Qt::Key_Right){
+            if(this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second + 1] == empty_){
+                this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second + 1] = GG_;
+                this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
+                this->_hero->coordinate = make_pair(this->_hero->coordinate.first, this->_hero->coordinate.second + 1);
+                //texture swaping
+                if(this->_hero->_orientation_of_hero != orientation_of_hero::right_){
+                    this->_hero->setRotation(270.);
+                    this->_hero->update();
+                }
+                this->_hero->_orientation_of_hero = orientation_of_hero::right_;
+
+                this->start_animation_and_move_hero();
+            }
+            else{
+                //texture swaping without move
+                if(this->_hero->_orientation_of_hero != orientation_of_hero::right_){
+                    this->_hero->setRotation(270.);
+                    this->_hero->update();
+                }
+                this->_hero->_orientation_of_hero = orientation_of_hero::right_;
+            }
+        }
+
+
+        if(ke->key() == Qt::Key_Down){
+            if(this->vec_of_soderzimoe[this->_hero->coordinate.first + 1][this->_hero->coordinate.second] == empty_){
+                this->vec_of_soderzimoe[this->_hero->coordinate.first + 1][this->_hero->coordinate.second] = GG_;
+                this->vec_of_soderzimoe[this->_hero->coordinate.first][this->_hero->coordinate.second] = empty_;
+                this->_hero->coordinate = make_pair(this->_hero->coordinate.first + 1, this->_hero->coordinate.second);
+                //texture swaping
+                if(this->_hero->_orientation_of_hero != orientation_of_hero::down_){
+                    this->_hero->setRotation(0.);
+                    this->_hero->update();
+                }
+                this->_hero->_orientation_of_hero = orientation_of_hero::down_;
+
+                this->start_animation_and_move_hero();
+            }
+            else{
+                //texture swaping without move
+                if(this->_hero->_orientation_of_hero != orientation_of_hero::down_){
+                    this->_hero->setRotation(0.);
+                    this->_hero->update();
+                }
+                this->_hero->_orientation_of_hero = orientation_of_hero::down_;
+            }
+        }
+    }
+    return true;
+}*/
 
 void randome_game::slotTimerAlarm()
 {

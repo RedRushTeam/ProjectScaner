@@ -179,6 +179,33 @@ graphic_window::graphic_window(vector<vector<type_of_item>>* vec_of_soderzimoe, 
 
 graphic_window::~graphic_window()
 {
+    /*vector<vector<type_of_item>>* vec_of_soderzimoe;
+    vector<vector<pair<type_of_fluctuation, float>>>* vec_of_fluct;
+    vector<pair<float, float>>* vec_of_graphik_of_second_formanta;
+    vector<pair<float, float>>* vec_of_graphik_of_third_formanta;
+    QBarSeries *series_2th_formanta;
+    QBarSeries *series_3th_formanta;
+    pair<int, int>  _now_range_2th_command = make_pair(-1, -1);
+    pair<float, float>  _now_range_2th_command_y = make_pair(-1, -1);
+    QBarCategoryAxis *axisX = nullptr;
+    QValueAxis *axisY = nullptr;
+    QChartView *chartView_2th_formanta = nullptr;*/
+
+    //очистка памяти
+    /*for(auto obj : *(this->vec_of_soderzimoe))
+        obj.clear();
+    this->vec_of_soderzimoe->clear();*/
+
+    /*for(auto obj : *(this->vec_of_fluct))
+        obj.clear();
+    this->vec_of_fluct->clear();*/
+
+    //this->vec_of_graphik_of_second_formanta->clear();
+
+    //this->vec_of_graphik_of_third_formanta->clear();
+
+    //axisX->clear();
+
     delete ui;
 }
 

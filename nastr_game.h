@@ -46,6 +46,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 
+    vector<vector<double>> vec_of_concr_angles;
     vector<vector<type_of_texture>> vec_of_concr_texture;
 };
 

@@ -42,6 +42,10 @@ nastr_game::nastr_game(QWidget *parent, int weight, int height) : randome_game(p
     for(int i = 0; i < this->vec_of_soderzimoe.size(); ++i)
         this->vec_of_concr_texture[i].resize(this->weight_of_map + 2);
 
+    this->vec_of_concr_angles.resize(this->height_of_map + 2);
+    for(int i = 0; i < this->vec_of_concr_angles.size(); ++i)
+        this->vec_of_concr_angles[i].resize(this->weight_of_map + 2, NULL);
+
     for(int i = 0; i < this->weight_of_map + 2; ++i){
         //verhnie
         this->vec_of_concr_texture[0][i] = Bricks_H_;
@@ -337,7 +341,7 @@ void nastr_game::upload()
     for(int i = 0; i < (this->height_of_map + 2); ++i){
         array.append("{");
         for(int j = 0; j < (this->weight_of_map + 2); ++j){
-                array.append(QString::fromStdString("[" + to_string(this->vec_of_concr_texture[i][j]) + "]"));
+                array.append(QString::fromStdString("[" + to_string(this->vec_of_concr_texture[i][j]) + "," + to_string(this->vec_of_concr_angles[i][j]) + "]"));
             }
         array.append("}");
     }
@@ -393,8 +397,10 @@ void nastr_game::download()
             }
             ++j1;
 
-            this->vec_of_concr_texture[i1][j1] = type_of_texture(stoi(now_line.substr(1, now_line.find("]"))));
+            this->vec_of_concr_texture[i1][j1] = type_of_texture(stoi(now_line.substr(1, now_line.find(","))));
             //this->vec_of_soderzimoe[i][j] = type_of_item(stoi(now_line.substr(1, now_line.find("]"))));
+            now_line = now_line.substr(now_line.find(",") + 1, now_line.size());
+            this->vec_of_concr_angles[i1][j1] = double(stoi(now_line.substr(0, now_line.find(","))));
             now_line = now_line.substr(now_line.find("]") + 1, now_line.size());
         }
     }
@@ -738,10 +744,10 @@ void nastr_game::mousePressEvent(QMouseEvent *event)
                 this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second] = this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1];
                 this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 2] = this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1];
 
-                this->vec_of_concr_texture[middle_of_texture.first + 2][middle_of_texture.second + 1] = pol_128x128_;
-                this->vec_of_concr_texture[middle_of_texture.first][middle_of_texture.second + 1] = pol_128x128_;
-                this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
-                this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 2] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                //this->vec_of_concr_texture[middle_of_texture.first + 2][middle_of_texture.second + 1] = pol_128x128_;
+                //this->vec_of_concr_texture[middle_of_texture.first][middle_of_texture.second + 1] = pol_128x128_;
+                //this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                //this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 2] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
 
                 this->vec_of_soderzimoe[middle_of_texture.first + 2][middle_of_texture.second + 1] = empty_;
                 this->vec_of_soderzimoe[middle_of_texture.first][middle_of_texture.second + 1] = empty_;
@@ -749,6 +755,7 @@ void nastr_game::mousePressEvent(QMouseEvent *event)
                 this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 2] = this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 1];
 
                 this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->setRotation(this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->rotation() + 90.);
+                this->vec_of_concr_angles[middle_of_texture.first + 1][middle_of_texture.second + 1] = this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->rotation();
             }
             else{
                 if(this->vec_of_concr_texture[middle_of_texture.first][middle_of_texture.second + 1] != pol_128x128_ || (this->vec_of_concr_texture[middle_of_texture.first + 2][middle_of_texture.second + 1] != pol_128x128_))
@@ -759,10 +766,10 @@ void nastr_game::mousePressEvent(QMouseEvent *event)
                 this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second] = nullptr;
                 this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 2] = nullptr;
 
-                this->vec_of_concr_texture[middle_of_texture.first + 2][middle_of_texture.second + 1] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
-                this->vec_of_concr_texture[middle_of_texture.first][middle_of_texture.second + 1] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
-                this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second] = pol_128x128_;
-                this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 2] = pol_128x128_;
+                //this->vec_of_concr_texture[middle_of_texture.first + 2][middle_of_texture.second + 1] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                //this->vec_of_concr_texture[middle_of_texture.first][middle_of_texture.second + 1] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                //this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second] = pol_128x128_;
+                //this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 2] = pol_128x128_;
 
                 this->vec_of_soderzimoe[middle_of_texture.first + 2][middle_of_texture.second + 1] = this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 1];
                 this->vec_of_soderzimoe[middle_of_texture.first][middle_of_texture.second + 1] = this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 1];
@@ -770,6 +777,7 @@ void nastr_game::mousePressEvent(QMouseEvent *event)
                 this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 2] = empty_;
 
                 this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->setRotation(this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->rotation() + 90.);
+                this->vec_of_concr_angles[middle_of_texture.first + 1][middle_of_texture.second + 1] = this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->rotation();
             }
         }
             break;
@@ -794,10 +802,10 @@ void nastr_game::mousePressEvent(QMouseEvent *event)
                         this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second] = this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1];
                         this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 2] = this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1];
 
-                        this->vec_of_concr_texture[middle_of_texture.first + 2][middle_of_texture.second + 1] = pol_128x128_;
-                        this->vec_of_concr_texture[middle_of_texture.first][middle_of_texture.second + 1] = pol_128x128_;
-                        this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
-                        this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 2] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                        //this->vec_of_concr_texture[middle_of_texture.first + 2][middle_of_texture.second + 1] = pol_128x128_;
+                        //this->vec_of_concr_texture[middle_of_texture.first][middle_of_texture.second + 1] = pol_128x128_;
+                        //this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                        //this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 2] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
 
                         this->vec_of_soderzimoe[middle_of_texture.first + 2][middle_of_texture.second + 1] = empty_;
                         this->vec_of_soderzimoe[middle_of_texture.first][middle_of_texture.second + 1] = empty_;
@@ -805,6 +813,7 @@ void nastr_game::mousePressEvent(QMouseEvent *event)
                         this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 2] = this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 1];
 
                         this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->setRotation(this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->rotation() + 90.);
+                        this->vec_of_concr_angles[middle_of_texture.first + 1][middle_of_texture.second + 1] = this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->rotation();
                     }
                     else{
                         if(this->vec_of_concr_texture[middle_of_texture.first][middle_of_texture.second + 1] != pol_128x128_ || (this->vec_of_concr_texture[middle_of_texture.first + 2][middle_of_texture.second + 1] != pol_128x128_))
@@ -815,10 +824,10 @@ void nastr_game::mousePressEvent(QMouseEvent *event)
                         this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second] = nullptr;
                         this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 2] = nullptr;
 
-                        this->vec_of_concr_texture[middle_of_texture.first + 2][middle_of_texture.second + 1] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
-                        this->vec_of_concr_texture[middle_of_texture.first][middle_of_texture.second + 1] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
-                        this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second] = pol_128x128_;
-                        this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 2] = pol_128x128_;
+                        //this->vec_of_concr_texture[middle_of_texture.first + 2][middle_of_texture.second + 1] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                        //this->vec_of_concr_texture[middle_of_texture.first][middle_of_texture.second + 1] = this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 1];
+                        //this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second] = pol_128x128_;
+                        //this->vec_of_concr_texture[middle_of_texture.first + 1][middle_of_texture.second + 2] = pol_128x128_;
 
                         this->vec_of_soderzimoe[middle_of_texture.first + 2][middle_of_texture.second + 1] = this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 1];
                         this->vec_of_soderzimoe[middle_of_texture.first][middle_of_texture.second + 1] = this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 1];
@@ -826,20 +835,25 @@ void nastr_game::mousePressEvent(QMouseEvent *event)
                         this->vec_of_soderzimoe[middle_of_texture.first + 1][middle_of_texture.second + 2] = empty_;
 
                         this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->setRotation(this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->rotation() + 90.);
+                        this->vec_of_concr_angles[middle_of_texture.first + 1][middle_of_texture.second + 1] = this->vec_of_pixmaps[middle_of_texture.first + 1][middle_of_texture.second + 1]->rotation();
                     }
         }
             break;
         case white_chair_:
             this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->rotation() + 90.);
+            this->vec_of_concr_angles[temp.first + 1][temp.second + 1] = this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->rotation();
             break;
         case Bricks_H_:
             this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->rotation() + 90.);
+            this->vec_of_concr_angles[temp.first + 1][temp.second + 1] = this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->rotation();
             break;
         case Bricks_V_:
             this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->rotation() + 90.);
+            this->vec_of_concr_angles[temp.first + 1][temp.second + 1] = this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->rotation();
             break;
         case wood_chair_128x128_:
             this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->setRotation(this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->rotation() + 90.);
+            this->vec_of_concr_angles[temp.first + 1][temp.second + 1] = this->vec_of_pixmaps[temp.first + 1][temp.second + 1]->rotation();
             break;
         case simpe_divan_:{ //code for 1x2 textures
             //с помощью инкрустированного алмазами костыля определяем, вертикально сейчас стоит текстура, или горизонтально:
@@ -857,13 +871,14 @@ void nastr_game::mousePressEvent(QMouseEvent *event)
                 this->vec_of_pixmaps[left_of_texture.first][left_of_texture.second + 1] = this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1];
                 this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 2] = nullptr;
 
-                this->vec_of_concr_texture[left_of_texture.first][left_of_texture.second + 1] = this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 1];
-                this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 2] = pol_128x128_;
+                //this->vec_of_concr_texture[left_of_texture.first][left_of_texture.second + 1] = this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 1];
+                //this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 2] = pol_128x128_;
 
                 this->vec_of_soderzimoe[left_of_texture.first][left_of_texture.second + 1] = this->vec_of_soderzimoe[left_of_texture.first + 1][left_of_texture.second + 1];
                 this->vec_of_soderzimoe[left_of_texture.first + 1][left_of_texture.second + 2] = empty_;
 
                 this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setRotation(90.);
+                this->vec_of_concr_angles[left_of_texture.first + 1][left_of_texture.second + 1] = this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->rotation();
 
                 //изм коорд
                 this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setPos(this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->pos().x() - 64., this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->pos().y() - 64.);
@@ -876,6 +891,7 @@ void nastr_game::mousePressEvent(QMouseEvent *event)
                 left_of_texture = make_pair(left_of_texture.first - 1, left_of_texture.second - 1);     //нормализованная координата для написанного мной костыля
 
                 this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setRotation(0.);
+                this->vec_of_concr_angles[left_of_texture.first + 1][left_of_texture.second + 1] = this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->rotation();
             }
 
             if(normilized_rotation == 90.){
@@ -885,6 +901,7 @@ void nastr_game::mousePressEvent(QMouseEvent *event)
                 left_of_texture = make_pair(left_of_texture.first - 1, left_of_texture.second - 1);     //нормализованная координата для написанного мной костыля
 
                 this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setRotation(270.);
+                this->vec_of_concr_angles[left_of_texture.first + 1][left_of_texture.second + 1] = this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->rotation();
             }
 
             if(normilized_rotation == 270.){
@@ -899,13 +916,14 @@ void nastr_game::mousePressEvent(QMouseEvent *event)
                 this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 2] = this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1];
                 this->vec_of_pixmaps[left_of_texture.first][left_of_texture.second + 1] = nullptr;
 
-                this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 2] = this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 1];
-                this->vec_of_concr_texture[left_of_texture.first][left_of_texture.second + 1] = pol_128x128_;
+                //this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 2] = this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 1];
+                //this->vec_of_concr_texture[left_of_texture.first][left_of_texture.second + 1] = pol_128x128_;
 
                 this->vec_of_soderzimoe[left_of_texture.first + 1][left_of_texture.second + 2] = this->vec_of_soderzimoe[left_of_texture.first + 1][left_of_texture.second + 1];
                 this->vec_of_soderzimoe[left_of_texture.first][left_of_texture.second + 1] = empty_;
 
                 this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setRotation(180.);
+                this->vec_of_concr_angles[left_of_texture.first + 1][left_of_texture.second + 1] = this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->rotation();
 
                 //изм коорд
                 this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setPos(this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->pos().x() + 64., this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->pos().y() + 64.);
@@ -928,13 +946,14 @@ void nastr_game::mousePressEvent(QMouseEvent *event)
                 this->vec_of_pixmaps[left_of_texture.first][left_of_texture.second + 1] = this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1];
                 this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 2] = nullptr;
 
-                this->vec_of_concr_texture[left_of_texture.first][left_of_texture.second + 1] = this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 1];
-                this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 2] = pol_128x128_;
+                //this->vec_of_concr_texture[left_of_texture.first][left_of_texture.second + 1] = this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 1];
+                //this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 2] = pol_128x128_;
 
                 this->vec_of_soderzimoe[left_of_texture.first][left_of_texture.second + 1] = this->vec_of_soderzimoe[left_of_texture.first + 1][left_of_texture.second + 1];
                 this->vec_of_soderzimoe[left_of_texture.first + 1][left_of_texture.second + 2] = empty_;
 
                 this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setRotation(90.);
+                this->vec_of_concr_angles[left_of_texture.first + 1][left_of_texture.second + 1] = this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->rotation();
 
                 //изм коорд
                 this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setPos(this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->pos().x() - 64., this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->pos().y() - 64.);
@@ -947,6 +966,7 @@ void nastr_game::mousePressEvent(QMouseEvent *event)
                 left_of_texture = make_pair(left_of_texture.first - 1, left_of_texture.second - 1);     //нормализованная координата для написанного мной костыля
 
                 this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setRotation(0.);
+                this->vec_of_concr_angles[left_of_texture.first + 1][left_of_texture.second + 1] = this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->rotation();
             }
 
             if(normilized_rotation == 90.){
@@ -956,6 +976,7 @@ void nastr_game::mousePressEvent(QMouseEvent *event)
                 left_of_texture = make_pair(left_of_texture.first - 1, left_of_texture.second - 1);     //нормализованная координата для написанного мной костыля
 
                 this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setRotation(270.);
+                this->vec_of_concr_angles[left_of_texture.first + 1][left_of_texture.second + 1] = this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->rotation();
             }
 
             if(normilized_rotation == 270.){
@@ -970,13 +991,14 @@ void nastr_game::mousePressEvent(QMouseEvent *event)
                 this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 2] = this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1];
                 this->vec_of_pixmaps[left_of_texture.first][left_of_texture.second + 1] = nullptr;
 
-                this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 2] = this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 1];
-                this->vec_of_concr_texture[left_of_texture.first][left_of_texture.second + 1] = pol_128x128_;
+                //this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 2] = this->vec_of_concr_texture[left_of_texture.first + 1][left_of_texture.second + 1];
+                //this->vec_of_concr_texture[left_of_texture.first][left_of_texture.second + 1] = pol_128x128_;
 
                 this->vec_of_soderzimoe[left_of_texture.first + 1][left_of_texture.second + 2] = this->vec_of_soderzimoe[left_of_texture.first + 1][left_of_texture.second + 1];
                 this->vec_of_soderzimoe[left_of_texture.first][left_of_texture.second + 1] = empty_;
 
                 this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setRotation(180.);
+                this->vec_of_concr_angles[left_of_texture.first + 1][left_of_texture.second + 1] = this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->rotation();
 
                 //изм коорд
                 this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->setPos(this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->pos().x() + 64., this->vec_of_pixmaps[left_of_texture.first + 1][left_of_texture.second + 1]->pos().y() + 64.);
